@@ -11,7 +11,7 @@ using System.Drawing;
  */
 namespace ULogView
 {
-    class LogArea
+    public class LogArea
     {
         //
         // Properties

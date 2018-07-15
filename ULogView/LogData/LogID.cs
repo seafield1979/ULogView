@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
-using System.Collections;
 
 namespace ULogView
 {
@@ -84,6 +83,11 @@ namespace ULogView
         // Methods
         //
         public override string ToString()
+        {
+            return String.Format("id:{0} name:{1}", id, name);
+        }
+
+        public string ToString2()
         {
             StringBuilder sb = new StringBuilder();
 

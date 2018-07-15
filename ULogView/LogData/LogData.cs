@@ -9,7 +9,7 @@ using System.Threading.Tasks;
  */
 namespace ULogView
 {
-    enum MemLogType : byte
+    public enum LogType : byte
     {
         Point,          // 1: 点ログ
         Range,          // 2: 範囲ログ
@@ -17,7 +17,7 @@ namespace ULogView
         Bind            // 4: 結合ログ (近いログをまとめて表示した状態)
     }
 
-    class LogData
+    public class LogData
     {
         //
         // Properties
@@ -42,9 +42,9 @@ namespace ULogView
         }
 
         //ログ種類
-        private MemLogType type;
+        private LogType type;
 
-        public MemLogType Type
+        public LogType Type
         {
             get { return type; }
             set { type = value; }
@@ -153,10 +153,10 @@ namespace ULogView
             
         }
 
-        public LogData(UInt32 id, LogType type, byte laneId, double time1, double time2, string text, string detailText)
+        public LogData(UInt32 id, LogFileType type, byte laneId, double time1, double time2, string text, string detailText)
         {
             this.id = id;
-            this.type = (MemLogType)type;
+            this.type = (LogType)type;
             this.laneId = laneId;
             this.time1 = time1;
             this.time2 = time2;

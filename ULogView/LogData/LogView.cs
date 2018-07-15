@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using System.Windows.Forms;
 
 namespace ULogView
 {
@@ -31,11 +32,12 @@ namespace ULogView
         //
         private LogArea rootArea;       // ルートエリア
         private LogArea currentArea;   // 表示中のエリア(配下のエリアも表示される)
-        private Image image;            // LogView描画先のImage
         private LogIDs logIDs;          // LogのID情報
         private Lanes lanes;            // レーン情報
         private IconImages iconImages;  // アイコン画像
 
+        private Image image;            // LogView描画先のImage
+        private bool redrawFlag;        // 再描画フラグ(true:再描画あり / false:なし)
 
         private double topTime;         // 表示領域の先頭の時間
         private double pixPerTime;      // 100pixelあたりの時間 (例:100pix = 1s なら 1)
@@ -50,16 +52,32 @@ namespace ULogView
         {
             image = new Bitmap(1000, 1000);
         }
+
+        public LogView(int width, int height)
+        {
+            Resize(width, height);
+        }
       
 
         //
         // Methods
         //
+        /**
+         * 表示領域のサイズが変更された
+         */
+        public void Resize(int width, int height)
+        {
+            if (width > 0 && height > 0)
+            {
+                image = new Bitmap(width, height);
+                redrawFlag = true;
+            }
+        }
 
         /**
          * LogViewファイルを読み込む
          */
-        public bool ReadLogFile(string filePath)
+        public bool ReadLogFile(string filePath, TreeView areaTree, CheckedListBox idListBox)
         {
             LogReader reader = new LogReader();
 
@@ -72,6 +90,9 @@ namespace ULogView
                 iconImages = reader.IconImages;
 
                 DebugPrint();
+
+                UpdateAreaTree(areaTree);
+                UpdateLogIDListBox(idListBox);
             }
             return true;
         }
@@ -85,11 +106,19 @@ namespace ULogView
 
         public void DrawBG(Graphics g)
         {
-            //Graphics g = Graphics.FromImage(image);
+            if (redrawFlag)
+            {
+                redrawFlag = false;
 
-            g.FillRectangle(Brushes.Red, 0, 0, 300, 300);
+                Pen pen1 = new Pen(Color.Aqua, 10);
 
-            //g.Dispose();
+                Graphics g2 = Graphics.FromImage(image);
+                g2.FillRectangle(Brushes.Red, 0, 0, 300, 300);
+                g2.DrawLine(pen1, 50, 50, 100, 100);
+                g2.Dispose();
+            }
+
+            g.DrawImage(image, 0, 0);
         }
 
         public void DrawLog(Graphics g)
@@ -97,7 +126,66 @@ namespace ULogView
 
         }
 
+
         #endregion
+
+        #region UI
+        
+        /**
+         * エリア表示用のTreeViewを更新する
+         */
+        public bool UpdateAreaTree(TreeView areaTree)
+        {
+            if (rootArea == null)
+            {
+                return false;
+            }
+
+            areaTree.Nodes.Clear();
+
+            // 全エリアをTreeに追加
+            areaTree.Nodes.Add("root");
+            GetAreaNode(areaTree.Nodes[0], rootArea);
+
+            return true;
+        }
+
+        private void GetAreaNode(TreeNode node, LogArea area)
+        {
+            if (area.ChildArea != null)
+            {
+                int i = 0;
+                foreach ( LogArea childArea in area.ChildArea)
+                {
+                    TreeNode newNode = new TreeNode(childArea.Name);
+                    newNode.Tag = childArea;
+                    node.Nodes.Add(newNode);
+                    GetAreaNode(node.Nodes[i], childArea);
+                    i++;
+                }
+            }
+        }
+
+        /**
+         * ログID用のCheckedListBoxを更新する
+         */
+        public bool UpdateLogIDListBox(CheckedListBox listBox)
+        {
+            listBox.Items.Clear();
+
+            if (logIDs != null)
+            {
+                listBox.Items.Add("all", true);
+                foreach (LogID logId in logIDs)
+                {
+                    listBox.Items.Add(logId, true);
+                }
+            }
+            return true;
+        }
+        
+        #endregion
+
 
         // 拡大率を上げる(見える範囲を狭くする)
         public void ZoomIn()
@@ -109,6 +197,17 @@ namespace ULogView
         public void ZoomOut()
         {
 
+        }
+
+        /**
+         * TreeViewのエリアが選択された時の処理
+         * 
+         * @input logArea : 選択されたエリア
+         */
+        public bool SelectArea(LogArea logArea)
+        {
+            Debug.WriteLine(logArea.Name);
+            return true;
         }
 
         #region LogID

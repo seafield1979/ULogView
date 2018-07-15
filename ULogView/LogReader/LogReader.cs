@@ -154,21 +154,13 @@ namespace ULogView
                 }
 
                 // 本体部分を読み込む
-                bool isBody = false;
                 while (!sr.EndOfStream)
                 {
                     // ファイルを 1 行ずつ読み込む
                     string line = sr.ReadLine().Trim();
 
                     // <body>を見つけたら本体の取得モードに入る
-                    if (!isBody)
-                    {
-                        if (line.Equals("<body>"))
-                        {
-                            isBody = true;
-                        }
-                    }
-                    else
+                    if (line.Equals("<body>"))
                     {
                         areaManager = GetLogDataText(sr);
                     }
@@ -283,7 +275,7 @@ namespace ULogView
                                     // FF001122 のような16進数文字列を整数値に変換
                                     lane.Color = Convert.ToUInt32(kvp.Value, 16);
                                 }
-                                catch (Exception e)
+                                catch (Exception)
                                 {
                                     lane.Color = 0;
                                 }
@@ -543,16 +535,16 @@ namespace ULogView
                         case "type":
                             switch (kvp.Value.ToLower()) {
                                 case "single":               // 単体ログ
-                                    log.Type = MemLogType.Point;
+                                    log.Type = LogType.Point;
                                     break;
                                 case "areastart":            // 範囲開始
-                                    log.Type = MemLogType.Range;
+                                    log.Type = LogType.Range;
                                     break;
                                 case "areaend":              // 範囲終了
-                                    log.Type = MemLogType.Range;
+                                    log.Type = LogType.Range;
                                     break;
                                 case "value":                // 値
-                                    log.Type = MemLogType.Value;
+                                    log.Type = LogType.Value;
                                     break;
                             }
                             break;
@@ -807,9 +799,9 @@ namespace ULogView
                 for (int i = 0; i < logNum; i++)
                 {
                     // 種類を取得
-                    LogType type = (LogType)fs.GetByte();
+                    LogFileType type = (LogFileType)fs.GetByte();
 
-                    if (type == LogType.Data)
+                    if (type == LogFileType.Data)
                     {
                         ReadLogDataBin(fs);
                     }
@@ -837,10 +829,10 @@ namespace ULogView
             
             switch (dataType) {
                 case LogDataType.Single:
-                    log.Type = MemLogType.Point;
+                    log.Type = LogType.Point;
                     break;
                 case LogDataType.RangeStart:
-                    log.Type = MemLogType.Range;
+                    log.Type = LogType.Range;
                     break;
                 case LogDataType.RangeEnd:
                     // 同じレーンの Range タイプのログに結合する
@@ -848,7 +840,7 @@ namespace ULogView
                     isRangeEnd = true;
                     break;
                 case LogDataType.Value:
-                    log.Type = MemLogType.Value;
+                    log.Type = LogType.Value;
                     break;
             }
 
@@ -863,7 +855,7 @@ namespace ULogView
 
             //時間
             Double time = fs.GetDouble();
-            if (log.Type == MemLogType.Range && isRangeEnd == true)
+            if (log.Type == LogType.Range && isRangeEnd == true)
             {
                 // 1つ前の Rangeタイプの Time2 に時間を設定
                 // todo

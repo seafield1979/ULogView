@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace ULogView
 {
@@ -23,24 +24,33 @@ namespace ULogView
         // Properties
         //
         public LogView logview;
+        private TreeView areaTree;
 
-        private Image image;
-
-        public Image Image
+        public TreeView AreaTree
         {
-            get { return image; }
-            set { image = value; }
+            get { return areaTree; }
+            set { areaTree = value; }
         }
+
+        private CheckedListBox idListBox;
+            
+        public CheckedListBox IdListBox
+        {
+            get { return idListBox; }
+            set { idListBox = value; }
+        }
+
 
 
         // 
         // Constructor
         //
-        public DocumentLV()
+        public DocumentLV(TreeView areaTree, CheckedListBox idListBox, int width, int height)
         {
-            logview = new LogView();
+            this.areaTree = areaTree;
+            this.idListBox = idListBox;
 
-            image = new Bitmap(500, 500);
+            logview = new LogView(width, height);
         }
 
         //
@@ -48,7 +58,7 @@ namespace ULogView
         // 
         public bool ReadLogFile(string filePath)
         {
-            return logview.ReadLogFile(filePath);
+            return logview.ReadLogFile(filePath, areaTree, idListBox);
         }
 
         #region Draw
@@ -76,6 +86,13 @@ namespace ULogView
             return true;
         }
 
+        //
+        // AreaTreeView
+        //
+        public bool SelectAreaTreeNode(LogArea logArea)
+        {
+            return logview.SelectArea(logArea);
+        }
         #endregion
 
 

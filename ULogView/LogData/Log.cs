@@ -20,7 +20,7 @@ namespace ULogView
     }
 
     // 本体以下のログの種類
-    public enum LogType : byte
+    public enum LogFileType : byte
     {
         Data = 1,       // データ(ログ)
         Area = 2        // エリア(ログを入れる箱)

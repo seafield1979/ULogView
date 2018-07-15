@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Diagnostics;
 
 namespace ULogView
 {
@@ -39,7 +40,7 @@ namespace ULogView
         #region Normal
         private void Initialize()
         {
-            documentLV = new DocumentLV();
+            documentLV = new DocumentLV(areaTree, idListBox, panel2.Width, panel2.Height );
         }
 
         #endregion
@@ -83,7 +84,49 @@ namespace ULogView
             
         }
 
+
+        /**
+         * TreeViewの項目をクリック
+         */
+        private void areaTree_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
+        {
+            TreeNode node = e.Node;
+            if (node == null || node.Tag == null)
+            {
+                return;
+            }
+
+            documentLV.SelectAreaTreeNode((LogArea)node.Tag);
+        }
+
+        /**
+         * CheckedListBoxの項目をクリック
+         */
+        private void idListBox_MouseClick(object sender, MouseEventArgs e)
+        {
+
+            Debug.WriteLine("{0}",e.Location);
+        }
         #endregion
+
+        private void idListBox_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            String s = idListBox.Items[e.Index].ToString();
+
+            if (s != null && s.Equals("all"))
+            {
+                //全項目のチェックを all の項目のチェックに合わせる
+                bool check = e.NewValue == CheckState.Checked ? true : false;
+                for (int i = 0; i < idListBox.Items.Count; i++)
+                {
+                    if (idListBox.Items[i].ToString().Equals("all"))
+                    {
+                        continue;
+                    }
+                    idListBox.SetItemChecked(i, check);
+                }
+            }
+        }
     }
 }
  
