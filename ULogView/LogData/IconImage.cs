@@ -10,7 +10,7 @@ namespace ULogView
     /*
      * メモリ展開されたアイコン画像
      */
-    class MemIconImage
+    class IconImage
     {
         //
         // Properties
@@ -37,12 +37,12 @@ namespace ULogView
         //
         // Constructor
         //
-        public MemIconImage()
+        public IconImage()
         {
             this.name = null;
             this.image = null;
         }
-        public MemIconImage(string name, Image image)
+        public IconImage(string name, Image image)
         {
             this.name = name;
             this.image = image;
@@ -57,7 +57,7 @@ namespace ULogView
          */
         public void SetByteImage(byte[] byteImage)
         {
-            this.image = MemIconImage.ByteArrayToImage(byteImage);
+            this.image = IconImage.ByteArrayToImage(byteImage);
         }
 
         // バイト配列をImageオブジェクトに変換
@@ -89,25 +89,25 @@ namespace ULogView
         }
     }
 
-    class MemIconImages
+    class IconImages
     {
         //
         // Properties
         // 
-        Dictionary<string, MemIconImage> images;
+        Dictionary<string, IconImage> images;
 
         //
         // Constructor
         // 
-        public MemIconImages()
+        public IconImages()
         {
-            images = new Dictionary<string, MemIconImage>();
+            images = new Dictionary<string, IconImage>();
         }
 
         // 
         // Methods
         //
-        public void Add(MemIconImage image)
+        public void Add(IconImage image)
         {
             if (image != null && image.Name != null)
             {
@@ -132,7 +132,7 @@ namespace ULogView
             StringBuilder sb = new StringBuilder();
 
             sb.AppendLine("<images>");
-            foreach( MemIconImage image in images.Values)
+            foreach( IconImage image in images.Values)
             {
                 sb.AppendFormat("\t{0}\r\n", image.ToString());
             }

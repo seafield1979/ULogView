@@ -234,7 +234,7 @@ namespace ULogView
     // メモリ情報エリアを管理するクラス
     // このクラスを使用してエリアを追加する
     // 
-    class MemLogAreaManager
+    class LogAreaManager
     {
         //
         // Properties 
@@ -242,7 +242,7 @@ namespace ULogView
         private LogArea rootArea;
         private LogArea lastAddArea;
 
-        public LogArea Rootarea
+        public LogArea RootArea
         {
             get { return rootArea; }
             set { rootArea = value; }
@@ -251,7 +251,7 @@ namespace ULogView
         /**
          * Constructor
          */
-        public MemLogAreaManager()
+        public LogAreaManager()
         {
             rootArea = new LogArea();
             lastAddArea = rootArea;

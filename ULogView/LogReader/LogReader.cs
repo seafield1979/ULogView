@@ -21,19 +21,35 @@ namespace ULogView
         private const int LANE_NAME_MAX = 64;       // レーン名のByte数
         private const int IMAGE_NAME_MAX = 64;      // 画像名のByte数
 
-        public const string IdentText = "text\r\n";    // ファイルの種別判定用文字列(テキスト)
+        public const string IdentText = "text";    // ファイルの種別判定用文字列(テキスト)
         public const string IdentBin = "data";     // ファイルの種別判定用文字列(バイナリ)
 
         //
         // Properties
         //
-        public Lanes lanes = null;
-        public LogIDs logIDs = null;
-        public MemIconImages images = null;
-        public MemLogAreaManager areaManager = new MemLogAreaManager();
+        
+        private Lanes lanes = null;
+        public Lanes Lanes
+        {
+            get { return lanes; }
+        }
+
+        private LogIDs logIDs = null;
+        public LogIDs LogIDs
+        {
+            get { return logIDs; }
+        }
+
+        private IconImages images = null;
+        public IconImages IconImages
+        {
+            get { return images; }
+        }
+
+        private LogAreaManager areaManager = new LogAreaManager();
         public Encoding encoding;
 
-        public MemLogAreaManager AreaManager
+        public LogAreaManager AreaManager
         {
             get { return areaManager; }
             set { areaManager = value; }
@@ -45,6 +61,10 @@ namespace ULogView
         public LogReader()
         {
             encoding = Encoding.UTF8;
+            logIDs = null;
+            lanes = null;
+            images = null;
+            areaManager = null;
         }
 
         /**
@@ -377,9 +397,9 @@ namespace ULogView
         /**
          * １行分のIconImage情報を取得する
          */
-        private MemIconImages GetIconImagesText(StreamReader sr)
+        private IconImages GetIconImagesText(StreamReader sr)
         {
-            MemIconImages _images = new MemIconImages();
+            IconImages _images = new IconImages();
 
             while (!sr.EndOfStream)
             {
@@ -397,7 +417,7 @@ namespace ULogView
                 }
 
                 // 画像情報を取得
-                MemIconImage image = new MemIconImage();
+                IconImage image = new IconImage();
 
                 foreach (KeyValuePair<string, string> kvp in fields)
                 {
@@ -434,9 +454,9 @@ namespace ULogView
          * <body>～</body> の中の行をすべて取得する
          * 
          */
-        private MemLogAreaManager GetLogDataText(StreamReader sr)
+        private LogAreaManager GetLogDataText(StreamReader sr)
         {
-            MemLogAreaManager manager = new MemLogAreaManager();
+            LogAreaManager manager = new LogAreaManager();
 
             while (!sr.EndOfStream)
             {
@@ -473,7 +493,7 @@ namespace ULogView
          * @input fields:
          * @output  取得したエリアデータ
          */
-        private LogArea GetMemAreaText(Dictionary<string,string> fields, MemLogAreaManager manager)
+        private LogArea GetMemAreaText(Dictionary<string,string> fields, LogAreaManager manager)
         {
             LogArea area = new LogArea();
 
@@ -744,9 +764,9 @@ namespace ULogView
         /**
          * バイナリログの画像ID情報を読み込む
          */
-        private MemIconImages ReadLogImagesBin(UFileStream fs)
+        private IconImages ReadLogImagesBin(UFileStream fs)
         {
-            MemIconImages _images = new MemIconImages();
+            IconImages _images = new IconImages();
 
             // 件数取得
             int size = fs.GetInt32();
@@ -754,7 +774,7 @@ namespace ULogView
             for (int i = 0; i < size; i++)
             {
                 // １件分のログを取得
-                MemIconImage image = new MemIconImage();
+                IconImage image = new IconImage();
 
                 // 名前
                 image.Name = fs.GetSizeString();

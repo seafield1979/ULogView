@@ -262,10 +262,10 @@ namespace ULogView.Utility
             Int32 size = GetInt32();
 
             // string
-            byte[] buf = new byte[size];
-            fs.Read(buf, 0, size);
+            byte[] _buf = new byte[size];
+            fs.Read(_buf, 0, size);
 
-            return encoding.GetString(buf);
+            return encoding.GetString(_buf);
         }
 
         public string GetString(int size)
@@ -273,7 +273,7 @@ namespace ULogView.Utility
             // string
             byte[] _buf = new byte[size];
             fs.Read(_buf, 0, size);
-            return encoding.GetString(buf);
+            return encoding.GetString(_buf);
         }
 
         #endregion
