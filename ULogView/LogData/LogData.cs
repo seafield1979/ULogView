@@ -165,6 +165,19 @@ namespace ULogView
             this.detail = MemDetailData.Deserialize(detailText);
         }
 
+        //
+        // Methods
+        //
+        /**
+         * 表示エリアが切り替わった、ズーム率が変わったタイミングで状態をクリアする
+         */
+        public void ClearState()
+        {
+            skipFlag = false;
+            pos = 0;
+            width = 0;
+        }
+
         /**
          * 文字列に変換
          */

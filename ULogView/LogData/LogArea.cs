@@ -332,6 +332,88 @@ namespace ULogView
             return rootArea;
         }
 
+
+        #region Static Methods
+
+        /**
+         * 指定エリア以下でログが存在するレーンのディクショナリを取得する
+         */
+        public static Dictionary<int, Lane> GetDispLaneList(LogArea area, Lanes lanes)
+        {
+            var dic1 = new Dictionary<int, bool>();
+            var dic2 = new Dictionary<int, Lane>();
+
+            GetDispLaneListOne(dic1, area);
+
+            // 戻り値用のDictionaryを作成
+            foreach (int laneID in dic1.Keys)
+            {
+                foreach (Lane lane in lanes)
+                {
+                    // dicのキーに表示すべきレーンのキーが入っているのでこれと一致するレーンが
+                    // 見つかったら戻り値用のDictionaryに追加する
+                    if (lane.ID == laneID)
+                    {
+                        dic2[laneID] = lane;
+                        break;
+                    }
+                }
+            }
+            return dic2;
+        }
+
+        /**
+         * GetDispLaneListの１エリア分の処理
+         * @input dic : 情報設定先
+         * @input area : 対象のエリア
+         */
+        private static void GetDispLaneListOne(Dictionary<int, bool> dic, LogArea area)
+        {
+            if (area.Logs != null && area.Logs.Count > 0)
+            {
+                foreach (LogData log in area.Logs)
+                {
+                    dic[(int)log.LaneId] = true;
+                }
+            }
+
+            // 子要素を探索して処理
+            if (area.ChildArea != null)
+            {
+                foreach(LogArea cArea in area.ChildArea)
+                {
+                    GetDispLaneListOne(dic, cArea);
+                }
+            }
+        }
+
+        /**
+         * 指定したエリア以下のログの状態をクリアする
+         * @input area : 指定のエリア
+         */
+        public static void ResetLogData(LogArea area)
+        {
+            if (area.Logs != null && area.Logs.Count > 0)
+            {
+                foreach (LogData log in area.Logs)
+                {
+                    log.ClearState();
+                }
+            }
+
+            // 子要素を探索して処理
+            if (area.ChildArea != null)
+            {
+                foreach (LogArea cArea in area.ChildArea)
+                {
+                    ResetLogData(cArea);
+                }
+            }
+        }
+
+        #endregion
+
+
         #region Debug
         public void Print()
         {

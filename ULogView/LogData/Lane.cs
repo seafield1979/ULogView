@@ -125,6 +125,17 @@ namespace ULogView
         }
 
         //
+        // IEnumerator interface
+        //
+        public IEnumerator<Lane> GetEnumerator()
+        {
+            foreach(Lane lane in lanes)
+            {
+                yield return lane;
+            }
+        }
+
+        //
         // Methods
         //
         /**

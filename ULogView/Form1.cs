@@ -11,6 +11,8 @@ using System.Diagnostics;
 
 namespace ULogView
 {
+    public delegate void InvalidateForm();
+
     public partial class Form1 : Form
     {
         //
@@ -35,12 +37,20 @@ namespace ULogView
         }
 
         //
+        // Delegate Methods
+        //
+        public void InvalidateDelegate()
+        {
+            panel2.Invalidate();
+        }
+        
+        //
         // Methods
         //
         #region Normal
         private void Initialize()
         {
-            documentLV = new DocumentLV(areaTree, idListBox, panel2.Width, panel2.Height );
+            documentLV = new DocumentLV(areaTree, idListBox, panel2.Width, panel2.Height, InvalidateDelegate);
         }
 
         #endregion
@@ -80,8 +90,6 @@ namespace ULogView
             Graphics g = e.Graphics;
 
             documentLV.Draw(g);
-
-            
         }
 
 
@@ -126,6 +134,11 @@ namespace ULogView
                     idListBox.SetItemChecked(i, check);
                 }
             }
+        }
+
+        private void panel2_Click(object sender, EventArgs e)
+        {
+            panel2.Invalidate();
         }
     }
 }
