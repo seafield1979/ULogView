@@ -36,6 +36,11 @@ namespace ULogView
             Initialize();
         }
 
+        public Form1(string logFilePath) : this()
+        {
+            documentLV.ReadLogFile(logFilePath);
+        }
+
         //
         // Delegate Methods
         //
