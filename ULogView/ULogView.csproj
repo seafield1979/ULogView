@@ -63,7 +63,12 @@
     <Compile Include="LogData\LogDetail.cs" />
     <Compile Include="LogData\LogID.cs" />
     <Compile Include="LogReader\LogReader.cs" />
-    <Compile Include="LogData\LogView.cs" />
+    <Compile Include="LogView\LogView.cs" />
+    <Compile Include="LogView\LogViewCommon.cs" />
+    <Compile Include="LogView\LogViewDrawOptions.cs" />
+    <Compile Include="LogView\LogViewPixTime.cs" />
+    <Compile Include="LogView\LogViewFont.cs" />
+    <Compile Include="LogView\LogViewOption.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utility\TimeCountByPerformanceCounter.cs" />

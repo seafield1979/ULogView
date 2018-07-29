@@ -18,8 +18,8 @@ namespace ULogView
         //
         private string name;            // エリア名
         private UInt32 color;           // エリアの色
-        private double timeStart;       // 開始時間(最初のログ時間)
-        private double timeEnd;         // 終了時間(最後のログ時間)
+        private double topTime;       // 開始時間(最初のログ時間)
+        private double endTime;         // 終了時間(最後のログ時間)
         private Image image;            // 画像
 
         private List<LogArea> childArea;  // 配下のエリア(areaTypeがDirの場合のみ使用)
@@ -49,15 +49,19 @@ namespace ULogView
             get { return image; }
             set { image = value; }
         }
-        public double TimeStart
+
+        // エリア内の先頭ログの時間
+        public double TopTime
         {
-            get { return timeStart; }
-            set { timeStart = value; }
+            get { return topTime; }
+            set { topTime = value; }
         }
-        public double TimeEnd
+
+        // エリア内の末尾のログの時間
+        public double EndTime
         {
-            get { return timeEnd; }
-            set { timeEnd = value; }
+            get { return endTime; }
+            set { endTime = value; }
         }
         public List<LogArea> ChildArea
         {
@@ -77,8 +81,8 @@ namespace ULogView
         {
             this.name = "root";
 
-            timeStart = 10000000;
-            timeEnd = 0;
+            topTime = 10000000;
+            endTime = 0;
             childArea = null;
             logs = null;
         }
@@ -118,19 +122,19 @@ namespace ULogView
 
             // 開始、終了の時間を更新
             // Start
-            if (timeStart > logData.Time1)
+            if (topTime > logData.Time1)
             {
-                timeStart = logData.Time1;
+                topTime = logData.Time1;
             }
 
             // End
-            if (timeEnd < logData.Time2)
+            if (endTime < logData.Time2)
             {
-                timeEnd = logData.Time2;
+                endTime = logData.Time2;
             }
-            else if (timeEnd < logData.Time1)
+            else if (endTime < logData.Time1)
             {
-                timeEnd = logData.Time1;
+                endTime = logData.Time1;
             }
         }
 
@@ -144,10 +148,10 @@ namespace ULogView
 
             sb.AppendFormat("area name:{0} ", name);
             sb.AppendFormat(" color:{0:X8}", color);
-            sb.AppendFormat(" timeStart:{0}", timeStart);
-            if (timeEnd != 0)
+            sb.AppendFormat(" timeStart:{0}", topTime);
+            if (endTime != 0)
             {
-                sb.Append(String.Format(" timeEnd:{0}", timeEnd));
+                sb.Append(String.Format(" timeEnd:{0}", endTime));
             }
             if (logs != null)
             {
@@ -183,10 +187,10 @@ namespace ULogView
 
         public void WriteToFile(StreamWriter sw)
         {
-            sw.Write("area name:{0},color:{1:X8} timeStart:{2}", name, color, timeStart);
-            if (timeEnd != 0)
+            sw.Write("area name:{0},color:{1:X8} timeStart:{2}", name, color, topTime);
+            if (endTime != 0)
             {
-                sw.Write(",timeEnd:{0}", timeEnd);
+                sw.Write(",timeEnd:{0}", endTime);
             }
             if (image != null)
             {

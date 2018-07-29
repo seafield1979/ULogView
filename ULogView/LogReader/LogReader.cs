@@ -55,6 +55,25 @@ namespace ULogView
             set { areaManager = value; }
         }
 
+        // 先頭のログの時間
+        private double topTime;
+
+        public double TopTime
+        {
+            get { return topTime; }
+            set { topTime = value; }
+        }
+
+        // 末尾のログの時間
+        private double endTime;
+
+        public double EndTime
+        {
+            get { return endTime; }
+            set { endTime = value; }
+        }
+
+
 
         //public string        
 
@@ -65,6 +84,8 @@ namespace ULogView
             lanes = null;
             images = null;
             areaManager = null;
+            topTime = 0;
+            endTime = 0;
         }
 
         /**
@@ -473,6 +494,7 @@ namespace ULogView
                 else if (fields.ContainsKey("log"))
                 {
                     LogData log = GetMemLogText(fields);
+                    
                     manager.AddLogData(log);
                 }
             }
@@ -522,7 +544,7 @@ namespace ULogView
          *  Sample
          *  log,type: Single,id: 1,lane: 1,time: 0.0026799596,text: "test1"
          */
-        private static LogData GetMemLogText(Dictionary<string,string> fields)
+        private LogData GetMemLogText(Dictionary<string,string> fields)
         {
             LogData log = new LogData();
 
