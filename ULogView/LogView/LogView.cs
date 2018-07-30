@@ -115,7 +115,7 @@ namespace ULogView
             lvOption = LogViewOption.GetObject();
             delegateInvalidate = invalidate1;
             dparam.imageSize = new Size(width, height);
-            Resize(width, height);
+            Resize(width, height, null, null);
             dispLanes = null;
 
             dparam.Init();
@@ -154,7 +154,7 @@ namespace ULogView
         /**
          * 表示領域のサイズが変更された
          */
-        public void Resize(int width, int height)
+        public void Resize(int width, int height, HScrollBar hSB, VScrollBar vSB)
         {
             if (width > 0 && height > 0)
             {
@@ -387,6 +387,7 @@ namespace ULogView
         #endregion
 
         #region UI
+        // UI::
         
         /**
          * エリア表示用のTreeViewを更新する
@@ -439,6 +440,11 @@ namespace ULogView
                 }
             }
             return true;
+        }
+
+        public void ScrollV(VScrollBar sb)
+        {
+
         }
         
         #endregion

@@ -56,6 +56,12 @@ namespace ULogView
         private void Initialize()
         {
             documentLV = new DocumentLV(areaTree, idListBox, panel2.Width, panel2.Height, InvalidateDelegate);
+            //panel2.VerticalScroll.Enabled = true;
+            //panel2.VerticalScroll.Visible = true;
+            //panel2.VerticalScroll.Minimum = 0;
+            //panel2.VerticalScroll.Maximum = 1000;
+            //panel2.VerticalScroll.Value = 500;
+
         }
 
         #endregion
@@ -143,7 +149,26 @@ namespace ULogView
 
         private void panel2_Click(object sender, EventArgs e)
         {
-            panel2.Invalidate();
+            //panel2.Invalidate();
+        }
+
+        private void panel2_Scroll(object sender, ScrollEventArgs e)
+        {
+            if (e.ScrollOrientation == ScrollOrientation.VerticalScroll)
+            {
+                Console.WriteLine("垂直方向に{0}スクロールされました",
+                    e.NewValue - e.OldValue);
+            }
+            else if (e.ScrollOrientation == ScrollOrientation.HorizontalScroll)
+            {
+                Console.WriteLine("水平方向に{0}スクロールされました",
+                    e.NewValue - e.OldValue);
+            }
+        }
+
+        private void panel2_Resize(object sender, EventArgs e)
+        {
+
         }
     }
 }
