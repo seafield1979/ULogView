@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System;   
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -73,6 +73,8 @@ namespace ULogView
         // Properties pp::
         //
         private InvalidateForm delegateInvalidate;
+        private UpdateScrollV delegateScrollV;
+        private UpdateScrollH delegateScrollH;
 
         private LogViewOption lvOption;
 
@@ -106,16 +108,18 @@ namespace ULogView
         // 
         // Constructor ct::
         //
-        public LogView() : this(1000, 1000, null)
+        public LogView() : this(1000, 1000, null, null, null)
         {   
         }
 
-        public LogView(int width, int height, InvalidateForm invalidate1)
+        public LogView(int width, int height, InvalidateForm invalidate1, UpdateScrollV _delegateScrollV, UpdateScrollH _delegateScrollH)
         {
             lvOption = LogViewOption.GetObject();
             delegateInvalidate = invalidate1;
+            delegateScrollV = _delegateScrollV;
+            delegateScrollH = _delegateScrollH;
             dparam.imageSize = new Size(width, height);
-            Resize(width, height, null, null);
+            Resize(width, height);
             dispLanes = null;
 
             dparam.Init();
@@ -154,7 +158,7 @@ namespace ULogView
         /**
          * 表示領域のサイズが変更された
          */
-        public void Resize(int width, int height, HScrollBar hSB, VScrollBar vSB)
+        public void Resize(int width, int height)
         {
             if (width > 0 && height > 0)
             {
@@ -269,6 +273,32 @@ namespace ULogView
             dparam.dispEndTime = dparam.dispTopTime + dparam.pixTime.pixToTime(dparam.LogImageWidth());
         }
 
+        /**
+         * 表示領域の更新があったときの処理
+         * ズーム率
+         * ログ表示範囲
+         * 画面スクロール等
+         */
+        private void UpdateDisp()
+        {
+            // 表示領域から末尾の時間を求める
+
+            // 先頭から末尾までのpixelを求める
+            int pixTop = (int)dparam.pixTime.timeToPix(dparam.dispTopTime);
+            int allPixLen = (int)dparam.pixTime.timeToPix(dparam.endTime - dparam.topTime);
+            int pagePixLen = (int)dparam.pixTime.timeToPix(dparam.dispEndTime - dparam.dispTopTime);
+
+            // スクロールバー更新
+            if (dparam.drawDir == DrawDirection.Horizontal)
+            {
+                delegateScrollH(pixTop, allPixLen, pagePixLen);
+            }
+            else
+            {
+                delegateScrollV(pixTop, allPixLen, pagePixLen);
+            }
+        }
+
         #endregion Zoom
 
 
@@ -289,7 +319,7 @@ namespace ULogView
                 redrawFlag = false;
 
                 Graphics g2 = Graphics.FromImage(image);
-                g.FillRectangle(Brushes.Black, 0, 0, image.Width, image.Height);
+                g2.FillRectangle(Brushes.Black, 0, 0, image.Width, image.Height);
 
                 DrawParams(g2, 10, 10);
                 DrawLanes(g2);
@@ -442,7 +472,22 @@ namespace ULogView
             return true;
         }
 
-        public void ScrollV(VScrollBar sb)
+        public void ScrollV(int value)
+        {
+
+        }
+
+        public void ScrollH(int value)
+        {
+
+        }
+
+        public void PageDown()
+        {
+
+        }
+
+        public void PageUp()
         {
 
         }

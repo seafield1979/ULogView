@@ -61,9 +61,19 @@ namespace ULogView
             return logview.ReadLogFile(filePath, areaTree, idListBox);
         }
 
-        public void Resize(int width, int height, HScrollBar hSB, VScrollBar vSB)
+        public void Resize(int width, int height)
         {
-            logview.Resize(width, height, hSB, vSB);
+            logview.Resize(width, height);
+        }
+
+        public void ScrollV(int value)
+        {
+            logview.ScrollV(value);
+        }
+
+        public void ScrollH(int value)
+        {
+            logview.ScrollH(value);
         }
 
         #region Draw

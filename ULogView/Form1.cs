@@ -12,7 +12,9 @@ using System.Diagnostics;
 namespace ULogView
 {
     public delegate void InvalidateForm();
-
+    public delegate void UpdateScrollV(int value, int max, int largePage);
+    public delegate void UpdateScrollH(int value, int max, int largePage);
+    
     public partial class Form1 : Form
     {
         //
@@ -25,7 +27,6 @@ namespace ULogView
             get { return documentLV; }
             set { documentLV = value; }
         }
-
 
         //
         // Constructor
@@ -147,29 +148,25 @@ namespace ULogView
             }
         }
 
-        private void panel2_Click(object sender, EventArgs e)
-        {
-            //panel2.Invalidate();
-        }
-
+        #region ScrollBar
         private void panel2_Scroll(object sender, ScrollEventArgs e)
         {
             if (e.ScrollOrientation == ScrollOrientation.VerticalScroll)
             {
-                Console.WriteLine("垂直方向に{0}スクロールされました",
-                    e.NewValue - e.OldValue);
+                documentLV.ScrollV(e.NewValue);
             }
             else if (e.ScrollOrientation == ScrollOrientation.HorizontalScroll)
             {
-                Console.WriteLine("水平方向に{0}スクロールされました",
-                    e.NewValue - e.OldValue);
+                documentLV.ScrollH(e.NewValue);
             }
         }
 
         private void panel2_Resize(object sender, EventArgs e)
         {
-
+            Panel panel = (Panel)sender;
+            documentLV.Resize(panel.Width, panel.Height);
         }
+        #endregion ScrollBar
     }
 }
  
