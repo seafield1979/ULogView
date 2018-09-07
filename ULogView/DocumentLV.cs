@@ -45,12 +45,14 @@ namespace ULogView
         // 
         // Constructor
         //
-        public DocumentLV(TreeView areaTree, CheckedListBox idListBox, int width, int height, InvalidateForm invalidate1)
+        public DocumentLV(int width, int height,
+            TreeView areaTree, CheckedListBox idListBox, HScrollBar hScrollBar, VScrollBar vScrollBar,
+            InvalidateForm invalidate1)
         {
             this.areaTree = areaTree;
             this.idListBox = idListBox;
 
-            logview = new LogView(width, height, invalidate1);
+            logview = new LogView(width, height, 0, invalidate1, hScrollBar, vScrollBar);
         }
 
         //

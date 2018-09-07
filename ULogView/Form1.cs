@@ -27,6 +27,12 @@ namespace ULogView
             get { return documentLV; }
             set { documentLV = value; }
         }
+        private bool isMouseDown;
+        private Point mouseDownPos;
+        private Point mouseOldPos;
+
+        private bool isControl;
+        private bool isShift;
 
         //
         // Constructor
@@ -56,12 +62,10 @@ namespace ULogView
         #region Normal
         private void Initialize()
         {
-            documentLV = new DocumentLV(areaTree, idListBox, panel2.Width, panel2.Height, InvalidateDelegate);
-            //panel2.VerticalScroll.Enabled = true;
-            //panel2.VerticalScroll.Visible = true;
-            //panel2.VerticalScroll.Minimum = 0;
-            //panel2.VerticalScroll.Maximum = 1000;
-            //panel2.VerticalScroll.Value = 500;
+            documentLV = new DocumentLV(panel2.Width, panel2.Height, areaTree, idListBox, hScrollBar1, vScrollBar1, InvalidateDelegate);
+
+            // マウスホイールのイベント登録
+            this.MouseWheel += new MouseEventHandler(this.MainForm_MouseWheel);
 
         }
 
@@ -91,6 +95,20 @@ namespace ULogView
             {
                 System.Diagnostics.Debug.Print(fileName);
                 documentLV.ReadLogFile(fileName);
+            }
+        }
+
+        /// <summary>
+        /// マウスホイールをスクロール
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MainForm_MouseWheel(object sender, MouseEventArgs e)
+        {
+            // ホイール量は e.Delta
+            if (documentLV.logview.ScrollY(-e.Delta) == true)
+            {
+                panel2.Invalidate();
             }
         }
 
@@ -149,24 +167,82 @@ namespace ULogView
         }
 
         #region ScrollBar
-        private void panel2_Scroll(object sender, ScrollEventArgs e)
-        {
-            if (e.ScrollOrientation == ScrollOrientation.VerticalScroll)
-            {
-                documentLV.ScrollV(e.NewValue);
-            }
-            else if (e.ScrollOrientation == ScrollOrientation.HorizontalScroll)
-            {
-                documentLV.ScrollH(e.NewValue);
-            }
-        }
+        //private void panel2_Scroll(object sender, ScrollEventArgs e)
+        //{
+        //    if (e.ScrollOrientation == ScrollOrientation.VerticalScroll)
+        //    {
+        //        documentLV.ScrollV(e.NewValue);
+        //    }
+        //    else if (e.ScrollOrientation == ScrollOrientation.HorizontalScroll)
+        //    {
+        //        documentLV.ScrollH(e.NewValue);
+        //    }
+        //}
 
         private void panel2_Resize(object sender, EventArgs e)
         {
-            Panel panel = (Panel)sender;
-            documentLV.Resize(panel.Width, panel.Height);
+            const int barW = 21;
+
+            var panel = (Panel)sender;
+
+            // 自前で用意したスクロールバーのサイズを更新する
+            vScrollBar1.SetBounds(panel.Size.Width - vScrollBar1.Width, 0, barW, panel.Size.Height - barW);
+            hScrollBar1.SetBounds(0, panel.Size.Height - barW - 100, panel.Size.Width - barW, barW);
+
+            // 画像サイズを更新
+            documentLV.Resize(panel.Size.Width, panel.Size.Height);
+
+            //panel1.Invalidate();
         }
         #endregion ScrollBar
+
+        private void vScrollBar1_Scroll(object sender, ScrollEventArgs e)
+        {
+            panel2.Invalidate();
+        }
+
+        private void hScrollBar1_Scroll(object sender, ScrollEventArgs e)
+        {
+            panel2.Invalidate();
+        }
+
+        private void panel2_MouseDown(object sender, MouseEventArgs e)
+        {
+            isMouseDown = true;
+            mouseDownPos = e.Location;
+            mouseOldPos = e.Location;
+        }
+
+        private void panel2_MouseLeave(object sender, EventArgs e)
+        {
+            isMouseDown = false;
+        }
+
+        private void panel2_MouseUp(object sender, MouseEventArgs e)
+        {
+            isMouseDown = false;
+        }
+        private void panel2_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (isMouseDown)
+            {
+                int moveX = e.X - mouseOldPos.X;
+                int moveY = e.Y - mouseOldPos.Y;
+                mouseOldPos.X = e.X;
+                mouseOldPos.Y = e.Y;
+
+                // ホイール量は e.Delta
+                if (documentLV.logview.ScrollX(moveX) == true)
+                {
+                    panel1.Invalidate();
+                }
+                if (documentLV.logview.ScrollY(moveY) == true)
+                {
+                    panel1.Invalidate();
+                }
+            }
+        }
+
     }
 }
  
