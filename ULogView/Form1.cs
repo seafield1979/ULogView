@@ -34,6 +34,8 @@ namespace ULogView
         private bool isControl;
         private bool isShift;
 
+        private object focusedObject;
+
         //
         // Constructor
         //
@@ -67,6 +69,45 @@ namespace ULogView
             // マウスホイールのイベント登録
             this.MouseWheel += new MouseEventHandler(this.MainForm_MouseWheel);
 
+
+            focusedObject = panel2;
+
+           
+        }
+
+        // zoom::
+        private void ZoomUp()
+        {
+            if (documentLV.logview.ZoomUp())
+            {
+                panel1.Invalidate();
+            }
+        }
+
+        private void ZoomDown()
+        {
+            if (documentLV.logview.ZoomDown())
+            {
+                panel1.Invalidate();
+            }
+            ;
+        }
+
+        // pixtime::
+        private void PixTimeZoomUp()
+        {
+            if (documentLV.logview.PixTimeZoomUp())
+            {
+                panel1.Invalidate();
+            }
+        }
+
+        private void PixTimeZoomDown()
+        {
+            if (documentLV.logview.PixTimeZoomDown())
+            {
+                panel1.Invalidate();
+            }
         }
 
         #endregion
@@ -145,6 +186,8 @@ namespace ULogView
 
             Debug.WriteLine("{0}",e.Location);
         }
+
+        
         #endregion
 
         private void idListBox_ItemCheck(object sender, ItemCheckEventArgs e)
@@ -234,13 +277,141 @@ namespace ULogView
                 // ホイール量は e.Delta
                 if (documentLV.logview.ScrollX(moveX) == true)
                 {
-                    panel1.Invalidate();
+                    panel2.Invalidate();
                 }
                 if (documentLV.logview.ScrollY(moveY) == true)
                 {
-                    panel1.Invalidate();
+                    panel2.Invalidate();
                 }
             }
+        }
+
+        private void Form1_KeyDown(object sender, KeyEventArgs e)
+        {
+            Debug.WriteLine(String.Format("keydown:{0}", e.KeyValue));
+
+            if (focusedObject == panel2)
+            {
+
+                switch ((Keys)e.KeyValue)
+                {
+                    case Keys.Left:
+                        break;
+                    case Keys.Up:
+                        if (isControl)
+                        {
+                            ZoomDown();
+                        }
+                        else
+                        {
+                            PixTimeZoomDown();
+                        }
+                        break;
+                    case Keys.Right:
+                        break;
+                    case Keys.Down:
+                        if (isControl)
+                        {
+                            ZoomUp();
+                        }
+                        else
+                        {
+                            PixTimeZoomUp();
+                        }
+                        break;
+                    case Keys.ControlKey:
+                        isControl = true;
+                        break;
+                    case Keys.ShiftKey:
+                        isShift = true;
+                        break;
+                    case Keys.PageDown:
+                        if (documentLV.logview.ScrollDown())
+                        {
+                            panel1.Invalidate();
+                        }
+                        break;
+                    case Keys.PageUp:
+                        if (documentLV.logview.ScrollUp())
+                        {
+                            panel1.Invalidate();
+                        }
+                        break;
+                    case Keys.V:
+                        documentLV.logview.SetDirection(0);
+                        panel1.Invalidate();
+                        break;
+                    case Keys.H:
+                        documentLV.logview.SetDirection(1);
+                        panel1.Invalidate();
+                        break;
+                }
+            }
+        }
+
+        private void Form1_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            Debug.WriteLine(String.Format("keypress:{0}", e.KeyChar));
+
+            if (focusedObject == panel2)
+            {
+                switch ((Keys)e.KeyChar)
+                {
+                    case Keys.Left:
+                        break;
+                    case Keys.Control:
+                        isControl = true;
+                        break;
+                    case Keys.Shift:
+                        isShift = true;
+                        break;
+                }
+            }
+        }
+
+        private void Form1_KeyUp(object sender, KeyEventArgs e)
+        {
+            Debug.WriteLine(String.Format("keyup:{0}", e.KeyValue));
+
+            if (focusedObject == panel2)
+            {
+                switch ((Keys)e.KeyValue)
+                {
+                    case Keys.ControlKey:
+                        isControl = false;
+                        break;
+                    case Keys.Shift:
+                        isShift = false;
+                        break;
+                }
+            }
+        }
+
+        private void panel2_Click(object sender, EventArgs e)
+        {
+            focusedObject = sender;
+            var panel = (DoubleBufferingPanel)sender;
+            panel.Focus();
+        }
+
+        private void tabControl1_Click(object sender, EventArgs e)
+        {
+            focusedObject = sender;
+        }
+
+        private void Form1_ForeColorChanged(object sender, EventArgs e)
+        {
+            focusedObject = sender;
+        }
+
+        private void zoomUpButton_Click(object sender, EventArgs e)
+        {
+            documentLV.logview.PixTimeZoomUp();
+        }
+
+        private void zoomDownButton_Click(object sender, EventArgs e)
+        {
+            documentLV.logview.PixTimeZoomDown();
         }
 
     }

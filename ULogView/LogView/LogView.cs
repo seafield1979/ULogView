@@ -14,39 +14,39 @@ namespace ULogView
     /**
      * LogViewの表示情報
      */
-    struct LVDrawParam
-    {
-        public Size imageSize;              // LogViewの表示領域(Image)の幅、高さ
-        public double topTime;              // 先頭の時間(先頭ログの時間)
-        public double endTime;              // 末尾の時間(末尾ログの時間)
-        public double endTime2;             // 末尾の時間(endTimeからtopTimeを引いた値)
-        public double dispTopTime;          // 表示先頭の時間(先頭位置が0原点の時間)
-        public double dispEndTime;          // 表示末尾の時間(先頭位置が0原点の時間)
-        //public int topPos;                  // 表示先頭座標(縦表示ならx、横表示ならy)
+    //struct LVDrawParam
+    //{
+    //    public Size imageSize;              // LogViewの表示領域(Image)の幅、高さ
+    //    public double topTime;              // 先頭の時間(先頭ログの時間)
+    //    public double endTime;              // 末尾の時間(末尾ログの時間)
+    //    public double endTime2;             // 末尾の時間(endTimeからtopTimeを引いた値)
+    //    public double dispTopTime;          // 表示先頭の時間(先頭位置が0原点の時間)
+    //    public double dispEndTime;          // 表示末尾の時間(先頭位置が0原点の時間)
+    //    //public int topPos;                  // 表示先頭座標(縦表示ならx、横表示ならy)
         
-        public UInt64 dispAreaLen;             // ログ表示領域のピクセル数
+    //    public UInt64 dispAreaLen;             // ログ表示領域のピクセル数
         
-        public DrawDirection drawDir;       // 表示方向(0: 縦 / 1:横)
-        public LogViewPixTime pixTime;      // 1pixelあたりの時間 (例:100pix = 1s なら 0.01)
+    //    public DrawDirection drawDir;       // 表示方向(0: 縦 / 1:横)
+    //    public LogViewPixTime pixTime;      // 1pixelあたりの時間 (例:100pix = 1s なら 0.01)
 
-        public void Init()
-        {
-            drawDir = DrawDirection.Horizontal;
-            dispTopTime = 0;
-            topTime = 0;
-            endTime = 0;
+    //    public void Init()
+    //    {
+    //        drawDir = DrawDirection.Horizontal;
+    //        dispTopTime = 0;
+    //        topTime = 0;
+    //        endTime = 0;
 
-            pixTime = new LogViewPixTime();
-        }
+    //        pixTime = new LogViewPixTime();
+    //    }
 
-        /**
-         * ログの向きに合わせて、ログ進行方向の画像サイズを取得する
-         */
-        public int LogImageWidth()
-        {
-            return drawDir == DrawDirection.Horizontal ? imageSize.Width : imageSize.Height;
-        }
-    }
+    //    /**
+    //     * ログの向きに合わせて、ログ進行方向の画像サイズを取得する
+    //     */
+    //    public int LogImageWidth()
+    //    {
+    //        return drawDir == DrawDirection.Horizontal ? imageSize.Width : imageSize.Height;
+    //    }
+    //}
 
     /// <summary>
     /// 
@@ -98,7 +98,6 @@ namespace ULogView
 
         private Image image;                // LogView描画先のImage
         private bool redrawFlag;            // 再描画フラグ(true:再描画あり / false:なし)
-        private LVDrawParam dparam;         // 描画用の情報
         
         private Dictionary<int, Lane> dispLanes;   // 表示中のレーン(key:LaneId)
 
@@ -133,45 +132,24 @@ namespace ULogView
 
         // 全体の先頭の時間
         private double topTime;
-
-        public double TopTime
-        {
-            get { return topTime; }
-            set { topTime = value; }
-        }
-
+        
         // 全体の最後の時間
         private double endTime;
-
-        public double EndTime
-        {
-            get { return endTime; }
-            set { endTime = value; }
-        }
 
         // 表示範囲の先頭の時間
         private double dispTopTime;
 
-        public double DispTopTime
-        {
-            get { return dispTopTime; }
-            set { dispTopTime = value; }
-        }
-
         // 表示範囲の末尾の時間
         private double dispEndTime;
-
-        public double DispEndTime
-        {
-            get { return dispEndTime; }
-            set { dispEndTime = value; }
-        }
 
         // 全体のズーム率
         private ZoomRate zoomRate;
 
         // 1ピクセル当たりの時間
         private LogViewPixTime pixTime;
+
+        // 全体のログ進行方向の領域の長さ
+        private UInt64 dispAreaLen;
 
         private HScrollBar scrollBarH;
         private VScrollBar scrollBarV;
@@ -220,7 +198,7 @@ namespace ULogView
             scrollBar2.LargeChange = height - (topMarginY + bottomMarginY);
 
             scrollBar1.Maximum = 1000;
-            scrollBar2.Maximum = (int)pixTime.timeToPix(endTime);
+            scrollBar2.Maximum = (int)pixTime.timeToPix(dispEndTime);
 
             Resize(width, height);
 
@@ -250,6 +228,7 @@ namespace ULogView
             delegateInvalidate();
         }
 
+        
         /**
          * 表示領域のサイズが変更された
          */
@@ -259,8 +238,13 @@ namespace ULogView
             {
                 if (image != null)
                 {
+                    if (image.Width == width && image.Height == height)
+                    {
+                        return;
+                    }
                     image.Dispose();
                 }
+
                 image = new Bitmap(width, height);
                 redrawFlag = true;
                 SetDirection(direction);
@@ -268,6 +252,7 @@ namespace ULogView
 
             delegateInvalidate();
         }
+
 
         /**
          * LogViewファイルを読み込む
@@ -291,7 +276,7 @@ namespace ULogView
 
                 Init();
                 SetLogArea(currentArea);
-                ChangeZoomRate();
+                //ChangeZoomRate();
             }
             return true;
         }
@@ -303,7 +288,7 @@ namespace ULogView
          * 
          * @input area : 表示エリア
          */
-        private void SetLogArea(LogArea area)
+        public void SetLogArea(LogArea area)
         {
             try
             {
@@ -314,8 +299,13 @@ namespace ULogView
 
                 // 先頭のログの時間を取得
                 GetTopEndLogTime(area);
-                dparam.endTime2 = dparam.endTime - dparam.topTime;
-                dparam.dispAreaLen = dparam.pixTime.timeToPix( dparam.endTime );
+
+                dispTopTime = topTime;
+                dispEndTime = GetDispEndTime();
+
+                dispAreaLen = pixTime.timeToPix(endTime);
+
+                ChangeZoomRate();
 
                 // ログの表示状態を初期状態に戻す
                 LogAreaManager.ResetLogData(area);
@@ -326,28 +316,33 @@ namespace ULogView
             }
         }
 
-        /**
-         * 指定したエリア以下のログのうち最初のログの時間を取得する
-         * @input area : 先頭のエリア
-         * @output 先頭のログの時間
-         */
+        /// <summary>
+        /// 指定したエリアを表示する際の先頭と末尾のログの時間を更新する
+        /// </summary>
+        /// <param name="area"></param>
         private void GetTopEndLogTime(LogArea area)
         {
+            topTime = 100000000;
+            endTime = 0;
+            GetTopEndLogTime2(area);
+        }
+        private void GetTopEndLogTime2(LogArea area)
+        {
             // topTimeとendTimeを更新
-            if (area.TopTime < dparam.topTime)
+            if (area.TopTime < topTime)
             {
-                dparam.topTime = area.TopTime;
+                topTime = area.TopTime;
             }
-            if (area.EndTime > dparam.endTime)
+            if (area.EndTime > endTime)
             {
-                dparam.endTime = area.EndTime;
+                endTime = area.EndTime;
             }
             
             if (area.ChildArea != null)
             {
                 foreach(LogArea cArea in area.ChildArea)
                 {
-                    GetTopEndLogTime(cArea);
+                    GetTopEndLogTime2(cArea);
                 }
             }
         }
@@ -367,11 +362,12 @@ namespace ULogView
                 scrollBar2 = scrollBarH;
             }
 
-            scrollBarH.LargeChange = image.Width - (topMarginX + bottomMarginX);
-            scrollBarV.LargeChange = image.Height - (topMarginY + bottomMarginY);
+            //scrollBar1.LargeChange = image.Width - (topMarginX + bottomMarginX);
+            //scrollBar2.LargeChange = image.Height - (topMarginY + bottomMarginY);
 
-            scrollBar1.Maximum = 1000;
-            scrollBar2.Maximum = (int)pixTime.timeToPix(endTime);
+            //scrollBar1.Maximum = 1000;
+            //scrollBar2.Maximum = (int)pixTime.timeToPix(dispEndTime);
+            ChangeZoomRate();
 
         }
 
@@ -381,7 +377,9 @@ namespace ULogView
          */
         private double GetDispEndTime()
         {
-            return dispTopTime + pixTime.pixToTime(scrollBar2.LargeChange) / zoomRate.Value;
+            double time = dispTopTime + pixTime.pixToTime(scrollBar2.LargeChange) / zoomRate.Value;
+
+            return time < endTime ? time : endTime;
         }
 
         public void setZoomRate(ZoomRate zoomRate)
@@ -430,7 +428,7 @@ namespace ULogView
             {
                 sb.Value = 0;
             }
-            else
+            else if (sb.Value + delta < sb.Maximum)
             {
                 sb.Value += delta;
             }
@@ -482,7 +480,7 @@ namespace ULogView
                 g2.DrawString(String.Format("[sbV] value:{0},large:{1} max:{2}", scrollBarV.Value, scrollBarV.LargeChange, scrollBarV.Maximum),
                     font1, Brushes.White, x0, y0);
                 y0 += 20;
-                g2.DrawString(String.Format("zoomRate:{0:0.######} pixTime.zoom:{1:0.########}", zoomRate, pixTime.Val), font1, Brushes.White, x0, y0);
+                g2.DrawString(String.Format("zoomRate:{0} pixTime.zoom:{1}", zoomRate, pixTime.Val), font1, Brushes.White, x0, y0);
                 y0 += 20;
 
                 if (direction == 0)
@@ -701,8 +699,14 @@ namespace ULogView
         {
             // 拡大したときの動作としてスクロールバーのmaxが変化するパターンと
             // LargeChangeが変化するパターンがあるが、ここではmaxが変換するパターンを採用
-            scrollBarH.Maximum = (int)(1000 * zoomRate.Value);
-            scrollBarV.Maximum = (int)((endTime - topTime) * zoomRate.Value / pixTime.Val);
+            scrollBar1.Maximum = (int)(1000 * zoomRate.Value);
+            scrollBar2.Maximum = (int)pixTime.timeToPix(dispEndTime - dispTopTime);
+
+            // 0になると完全に表示されなくなるため下限は1
+            if (scrollBar2.Maximum < 1)
+            {
+                scrollBar2.Maximum = 1;
+            }
 
             if (scrollBarH.LargeChange > scrollBarH.Maximum)
             {
@@ -723,6 +727,8 @@ namespace ULogView
             {
                 scrollBarH.Enabled = true;
             }
+
+            delegateInvalidate();
         }
 
         /**
@@ -734,13 +740,13 @@ namespace ULogView
             int y = _y;
             const int fontSize = 10;
 
-            g.DrawString(String.Format("TopTime:{0}", dparam.topTime), fontDebug, brushDebugText, x, y);
+            g.DrawString(String.Format("TopTime:{0}", topTime), fontDebug, brushDebugText, x, y);
             y += fontSize + 4;
-            g.DrawString(String.Format("EndTime:{0}", dparam.endTime), fontDebug, brushDebugText, x, y);
+            g.DrawString(String.Format("EndTime:{0}", endTime), fontDebug, brushDebugText, x, y);
             y += fontSize + 4;
-            g.DrawString(String.Format("DispTopTime:{0}", dparam.dispTopTime), fontDebug, brushDebugText, x, y);
+            g.DrawString(String.Format("DispTopTime:{0}", dispTopTime), fontDebug, brushDebugText, x, y);
             y += fontSize + 4;
-            g.DrawString(String.Format("DispEndTime:{0}", dparam.dispEndTime), fontDebug, brushDebugText, x, y);
+            g.DrawString(String.Format("DispEndTime:{0}", dispEndTime), fontDebug, brushDebugText, x, y);
         }
 
         public void DrawLog(Graphics g)
@@ -850,17 +856,7 @@ namespace ULogView
 
         }
 
-        /**
-         * TreeViewのエリアが選択された時の処理
-         * 
-         * @input logArea : 選択されたエリア
-         */
-        public bool SelectArea(LogArea logArea)
-        {
-            Debug.WriteLine(logArea.Name);
-            return true;
-        }
-
+        
         #region LogID
 
         #endregion

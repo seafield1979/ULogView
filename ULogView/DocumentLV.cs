@@ -108,7 +108,8 @@ namespace ULogView
         //
         public bool SelectAreaTreeNode(LogArea logArea)
         {
-            return logview.SelectArea(logArea);
+            logview.SetLogArea(logArea);
+            return true;
         }
         #endregion
 
