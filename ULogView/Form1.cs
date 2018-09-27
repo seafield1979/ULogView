@@ -20,6 +20,7 @@ namespace ULogView
         //
         // Properties
         // 
+        #region Properties
         private DocumentLV documentLV;
 
         public DocumentLV DocumentLV
@@ -36,9 +37,13 @@ namespace ULogView
 
         private object focusedObject;
 
+        #endregion Properties
+
+
         //
         // Constructor
         //
+        #region コンストラクタ
         public Form1()
         {
             InitializeComponent();
@@ -50,16 +55,20 @@ namespace ULogView
             documentLV.ReadLogFile(logFilePath);
         }
 
+        #endregion コンストラクタ
+
         //
         // Delegate Methods
         //
+        #region Delegate
         public void InvalidateDelegate()
         {
             panel2.Invalidate();
         }
-        
+        #endregion Delegate
+
         //
-        // Methods
+        // Methods::
         //
         #region Normal
         private void Initialize()
@@ -69,10 +78,7 @@ namespace ULogView
             // マウスホイールのイベント登録
             this.MouseWheel += new MouseEventHandler(this.MainForm_MouseWheel);
 
-
             focusedObject = panel2;
-
-           
         }
 
         // zoom::
@@ -112,180 +118,14 @@ namespace ULogView
 
         #endregion
 
+
+
+
         #region Event
-        private void 終了XToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void panel2_DragEnter(object sender, DragEventArgs e)
-        {
-            // ファイルをドロップできるようにする
-            if (e.Data.GetDataPresent(DataFormats.FileDrop))
-            {
-                e.Effect = DragDropEffects.Copy;
-            }
-        }
-
-        private void panel2_DragDrop(object sender, DragEventArgs e)
-        {
-            // ドロップしたファイルを取得
-            string[] fileNames = (string[])e.Data.GetData(DataFormats.FileDrop, false);
-
-            foreach (var fileName in fileNames)
-            {
-                System.Diagnostics.Debug.Print(fileName);
-                documentLV.ReadLogFile(fileName);
-            }
-        }
-
-        /// <summary>
-        /// マウスホイールをスクロール
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void MainForm_MouseWheel(object sender, MouseEventArgs e)
-        {
-            // ホイール量は e.Delta
-            if (documentLV.logview.ScrollY(-e.Delta) == true)
-            {
-                panel2.Invalidate();
-            }
-        }
-
-        /**
-         * ログ領域の描画
-         */
-        private void panel2_Paint(object sender, PaintEventArgs e)
-        {
-            Graphics g = e.Graphics;
-
-            documentLV.Draw(g);
-        }
 
 
-        /**
-         * TreeViewの項目をクリック
-         */
-        private void areaTree_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
-        {
-            TreeNode node = e.Node;
-            if (node == null || node.Tag == null)
-            {
-                return;
-            }
-
-            documentLV.SelectAreaTreeNode((LogArea)node.Tag);
-        }
-
-        /**
-         * CheckedListBoxの項目をクリック
-         */
-        private void idListBox_MouseClick(object sender, MouseEventArgs e)
-        {
-
-            Debug.WriteLine("{0}",e.Location);
-        }
-
-        
-        #endregion
-
-        private void idListBox_ItemCheck(object sender, ItemCheckEventArgs e)
-        {
-            String s = idListBox.Items[e.Index].ToString();
-
-            if (s != null && s.Equals("all"))
-            {
-                //全項目のチェックを all の項目のチェックに合わせる
-                bool check = e.NewValue == CheckState.Checked ? true : false;
-                for (int i = 0; i < idListBox.Items.Count; i++)
-                {
-                    if (idListBox.Items[i].ToString().Equals("all"))
-                    {
-                        continue;
-                    }
-                    idListBox.SetItemChecked(i, check);
-                }
-            }
-        }
-
-        #region ScrollBar
-        //private void panel2_Scroll(object sender, ScrollEventArgs e)
-        //{
-        //    if (e.ScrollOrientation == ScrollOrientation.VerticalScroll)
-        //    {
-        //        documentLV.ScrollV(e.NewValue);
-        //    }
-        //    else if (e.ScrollOrientation == ScrollOrientation.HorizontalScroll)
-        //    {
-        //        documentLV.ScrollH(e.NewValue);
-        //    }
-        //}
-
-        private void panel2_Resize(object sender, EventArgs e)
-        {
-            const int barW = 21;
-
-            var panel = (Panel)sender;
-
-            // 自前で用意したスクロールバーのサイズを更新する
-            vScrollBar1.SetBounds(panel.Size.Width - vScrollBar1.Width, 0, barW, panel.Size.Height - barW);
-            hScrollBar1.SetBounds(0, panel.Size.Height - barW - 100, panel.Size.Width - barW, barW);
-
-            // 画像サイズを更新
-            documentLV.Resize(panel.Size.Width, panel.Size.Height);
-
-            //panel1.Invalidate();
-        }
-        #endregion ScrollBar
-
-        private void vScrollBar1_Scroll(object sender, ScrollEventArgs e)
-        {
-            panel2.Invalidate();
-        }
-
-        private void hScrollBar1_Scroll(object sender, ScrollEventArgs e)
-        {
-            panel2.Invalidate();
-        }
-
-        private void panel2_MouseDown(object sender, MouseEventArgs e)
-        {
-            isMouseDown = true;
-            mouseDownPos = e.Location;
-            mouseOldPos = e.Location;
-        }
-
-        private void panel2_MouseLeave(object sender, EventArgs e)
-        {
-            isMouseDown = false;
-        }
-
-        private void panel2_MouseUp(object sender, MouseEventArgs e)
-        {
-            isMouseDown = false;
-        }
-        private void panel2_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (isMouseDown)
-            {
-                int moveX = e.X - mouseOldPos.X;
-                int moveY = e.Y - mouseOldPos.Y;
-                mouseOldPos.X = e.X;
-                mouseOldPos.Y = e.Y;
-
-                // ホイール量は e.Delta
-                if (documentLV.logview.ScrollX(moveX) == true)
-                {
-                    panel2.Invalidate();
-                }
-                if (documentLV.logview.ScrollY(moveY) == true)
-                {
-                    panel2.Invalidate();
-                }
-            }
-        }
-
+        // form::
+        #region Form
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
             Debug.WriteLine(String.Format("keydown:{0}", e.KeyValue));
@@ -337,14 +177,6 @@ namespace ULogView
                             panel1.Invalidate();
                         }
                         break;
-                    case Keys.V:
-                        documentLV.logview.SetDirection(0);
-                        panel1.Invalidate();
-                        break;
-                    case Keys.H:
-                        documentLV.logview.SetDirection(1);
-                        panel1.Invalidate();
-                        break;
                 }
             }
         }
@@ -387,6 +219,129 @@ namespace ULogView
             }
         }
 
+        /// <summary>
+        /// マウスホイールをスクロール
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MainForm_MouseWheel(object sender, MouseEventArgs e)
+        {
+            // ホイール量は e.Delta
+            if (documentLV.logview.ScrollY(-e.Delta) == true)
+            {
+                panel2.Invalidate();
+            }
+        }
+
+        #endregion Form
+
+
+
+
+
+
+
+
+        // menu::
+        #region Menu
+        private void 終了XToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+        #endregion Menu
+
+
+
+
+
+
+
+
+        // panel2::
+        #region Panel2
+
+        private void panel2_DragEnter(object sender, DragEventArgs e)
+        {
+            // ファイルをドロップできるようにする
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                e.Effect = DragDropEffects.Copy;
+            }
+        }
+
+        private void panel2_DragDrop(object sender, DragEventArgs e)
+        {
+            // ドロップしたファイルを取得
+            string[] fileNames = (string[])e.Data.GetData(DataFormats.FileDrop, false);
+
+            foreach (var fileName in fileNames)
+            {
+                System.Diagnostics.Debug.Print(fileName);
+                documentLV.ReadLogFile(fileName);
+            }
+        }
+
+        /// <summary>
+        /// ログ領域の描画イベント
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void panel2_Paint(object sender, PaintEventArgs e)
+        {
+            Graphics g = e.Graphics;
+
+            documentLV.Draw(g);
+        }
+
+
+        private void panel2_MouseDown(object sender, MouseEventArgs e)
+        {
+            isMouseDown = true;
+            mouseDownPos = e.Location;
+            mouseOldPos = e.Location;
+        }
+
+        private void panel2_MouseLeave(object sender, EventArgs e)
+        {
+            isMouseDown = false;
+        }
+
+        private void panel2_MouseUp(object sender, MouseEventArgs e)
+        {
+            isMouseDown = false;
+        }
+
+        /// <summary>
+        /// マウスを移動したときのイベント
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void panel2_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (isMouseDown)
+            {
+                int moveX = e.X - mouseOldPos.X;
+                int moveY = e.Y - mouseOldPos.Y;
+                mouseOldPos.X = e.X;
+                mouseOldPos.Y = e.Y;
+
+                // ホイール量は e.Delta
+                if (documentLV.logview.ScrollX(moveX) == true)
+                {
+                    panel2.Invalidate();
+                }
+                if (documentLV.logview.ScrollY(moveY) == true)
+                {
+                    panel2.Invalidate();
+                }
+            }
+        }
+
+        /// <summary>
+        /// パネルをクリックしたときの処理
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void panel2_Click(object sender, EventArgs e)
         {
             focusedObject = sender;
@@ -394,15 +349,170 @@ namespace ULogView
             panel.Focus();
         }
 
+
+        /// <summary>
+        /// リサイズ時のイベント
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void panel2_Resize(object sender, EventArgs e)
+        {
+            const int barW = 21;
+
+            var panel = (Panel)sender;
+
+            // 自前で用意したスクロールバーのサイズを更新する
+            vScrollBar1.SetBounds(panel.Size.Width - vScrollBar1.Width, 0, barW, panel.Size.Height - barW);
+            hScrollBar1.SetBounds(0, panel.Size.Height - barW - 100, panel.Size.Width - barW, barW);
+
+            // 画像サイズを更新
+            documentLV.Resize(panel.Size.Width, panel.Size.Height);
+
+            //panel1.Invalidate();
+        }
+        #endregion Panel2
+
+
+
+
+
+
+
+
+
+
+
+
+
+        // treeview::
+        #region TreeView
+        /// <summary>
+        /// TreeViewの項目をクリック
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void areaTree_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
+        {
+            TreeNode node = e.Node;
+            if (node == null || node.Tag == null)
+            {
+                return;
+            }
+
+            documentLV.SelectAreaTreeNode((LogArea)node.Tag);
+        }
+
+        #endregion TreeView
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        // listbox::
+        #region ListBox
+        /// <summary>
+        /// CheckedListBoxの項目をクリック
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void idListBox_MouseClick(object sender, MouseEventArgs e)
+        {
+
+            Debug.WriteLine("{0}",e.Location);
+        }
+
+        /// <summary>
+        /// リストボックスの項目をチェックしたときの処理
+        /// all項目がチェックされたら全項目をON/OFFにする
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void idListBox_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            String s = idListBox.Items[e.Index].ToString();
+
+            if (s != null && s.Equals("all"))
+            {
+                //全項目のチェックを all の項目のチェックに合わせる
+                bool check = e.NewValue == CheckState.Checked ? true : false;
+                for (int i = 0; i < idListBox.Items.Count; i++)
+                {
+                    if (idListBox.Items[i].ToString().Equals("all"))
+                    {
+                        continue;
+                    }
+                    idListBox.SetItemChecked(i, check);
+                }
+            }
+        }
+        #endregion ListBox
+
+
+
+
+
+
+
+
+
+
+
+
+        // scrollbar::
+        #region ScrollBar
+
+        private void vScrollBar1_Scroll(object sender, ScrollEventArgs e)
+        {
+            panel2.Invalidate();
+        }
+
+        private void hScrollBar1_Scroll(object sender, ScrollEventArgs e)
+        {
+            panel2.Invalidate();
+        }
+
+        #endregion ScrollBar
+
+
+
+
+
+
+
+
+
+
+
+        // tab::
+        #region Tab
         private void tabControl1_Click(object sender, EventArgs e)
         {
             focusedObject = sender;
         }
+        #endregion tab
 
-        private void Form1_ForeColorChanged(object sender, EventArgs e)
-        {
-            focusedObject = sender;
-        }
+
+
+
+
+
+
+
+
+
+
+
+        // button::
+        #region Button
 
         private void zoomUpButton_Click(object sender, EventArgs e)
         {
@@ -413,7 +523,9 @@ namespace ULogView
         {
             documentLV.logview.PixTimeZoomDown();
         }
+        #endregion Button
 
+        #endregion Event
     }
 }
  

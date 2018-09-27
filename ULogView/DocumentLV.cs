@@ -68,15 +68,15 @@ namespace ULogView
             logview.Resize(width, height);
         }
 
-        public void ScrollV(int value)
-        {
-            logview.ScrollV(value);
-        }
+        //public void ScrollV(int value)
+        //{
+        //    logview.ScrollV(value);
+        //}
 
-        public void ScrollH(int value)
-        {
-            logview.ScrollH(value);
-        }
+        //public void ScrollH(int value)
+        //{
+        //    logview.ScrollH(value);
+        //}
 
         #region Draw
         public void Draw(Graphics g)

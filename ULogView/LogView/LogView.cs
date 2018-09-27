@@ -9,45 +9,6 @@ using System.Windows.Forms;
 
 namespace ULogView
 {
-
-
-    /**
-     * LogViewの表示情報
-     */
-    //struct LVDrawParam
-    //{
-    //    public Size imageSize;              // LogViewの表示領域(Image)の幅、高さ
-    //    public double topTime;              // 先頭の時間(先頭ログの時間)
-    //    public double endTime;              // 末尾の時間(末尾ログの時間)
-    //    public double endTime2;             // 末尾の時間(endTimeからtopTimeを引いた値)
-    //    public double dispTopTime;          // 表示先頭の時間(先頭位置が0原点の時間)
-    //    public double dispEndTime;          // 表示末尾の時間(先頭位置が0原点の時間)
-    //    //public int topPos;                  // 表示先頭座標(縦表示ならx、横表示ならy)
-        
-    //    public UInt64 dispAreaLen;             // ログ表示領域のピクセル数
-        
-    //    public DrawDirection drawDir;       // 表示方向(0: 縦 / 1:横)
-    //    public LogViewPixTime pixTime;      // 1pixelあたりの時間 (例:100pix = 1s なら 0.01)
-
-    //    public void Init()
-    //    {
-    //        drawDir = DrawDirection.Horizontal;
-    //        dispTopTime = 0;
-    //        topTime = 0;
-    //        endTime = 0;
-
-    //        pixTime = new LogViewPixTime();
-    //    }
-
-    //    /**
-    //     * ログの向きに合わせて、ログ進行方向の画像サイズを取得する
-    //     */
-    //    public int LogImageWidth()
-    //    {
-    //        return drawDir == DrawDirection.Horizontal ? imageSize.Width : imageSize.Height;
-    //    }
-    //}
-
     /// <summary>
     /// 
     /// </summary>
@@ -122,9 +83,9 @@ namespace ULogView
         #region Properties
 
         // 表示の方向
-        private int direction;
+        private ELogViewDir direction;
 
-        public int Direction
+        public ELogViewDir Direction
         {
             get { return direction; }
             set { direction = value; }
@@ -166,19 +127,19 @@ namespace ULogView
         {   
         }
 
-        public LogView(int width, int height, int direction, InvalidateForm invalidateForm, HScrollBar scrollBarH, VScrollBar scrollBarV)
+        public LogView(int width, int height, ELogViewDir direction, InvalidateForm invalidateForm, HScrollBar scrollBarH, VScrollBar scrollBarV)
         {
             lvOption = LogViewOption.GetObject();
 
             delegateInvalidate = invalidateForm;
             pixTime = new LogViewPixTime();
             zoomRate = new ZoomRate();
-
+            
             this.scrollBarH = scrollBarH;
             this.scrollBarV = scrollBarV;
 
             this.direction = direction;
-            if (direction == 0)
+            if (direction == ELogViewDir.Vertical)
             {
                 scrollBar1 = scrollBarH;
                 scrollBar2 = scrollBarV;
@@ -276,7 +237,6 @@ namespace ULogView
 
                 Init();
                 SetLogArea(currentArea);
-                //ChangeZoomRate();
             }
             return true;
         }
@@ -347,11 +307,15 @@ namespace ULogView
             }
         }
 
-        public void SetDirection(int direction)
+        /// <summary>
+        /// ログのタイムライン進行方向を設定する。
+        /// </summary>
+        /// <param name="direction"></param>
+        public void SetDirection(ELogViewDir direction)
         {
             this.direction = direction;
 
-            if (direction == 0)
+            if (direction == ELogViewDir.Vertical)
             {
                 scrollBar1 = scrollBarH;
                 scrollBar2 = scrollBarV;
@@ -362,33 +326,28 @@ namespace ULogView
                 scrollBar2 = scrollBarH;
             }
 
-            //scrollBar1.LargeChange = image.Width - (topMarginX + bottomMarginX);
-            //scrollBar2.LargeChange = image.Height - (topMarginY + bottomMarginY);
-
-            //scrollBar1.Maximum = 1000;
-            //scrollBar2.Maximum = (int)pixTime.timeToPix(dispEndTime);
             ChangeZoomRate();
-
         }
 
         /**
          * 表示領域の端の時間
-         * 画面に表示されるViewの一番端のピクセルの時間
+         * 画面の一番端のピクセルの時間
          */
         private double GetDispEndTime()
         {
-            double time = dispTopTime + pixTime.pixToTime(scrollBar2.LargeChange) / zoomRate.Value;
+            double time = dispTopTime + (pixTime.pixToTime(scrollBar2.LargeChange + 200)) / zoomRate.Value;
 
             return time < endTime ? time : endTime;
         }
 
+        // 画面全体のズーム率を設定する
         public void setZoomRate(ZoomRate zoomRate)
         {
             this.zoomRate = zoomRate;
         }
 
         // 指定の整数値にズーム率をかけた結果を取得
-        public int getZoomValue(int value)
+        private int getZoomValue(int value)
         {
             return (int)(value * zoomRate.Value);
         }
@@ -400,22 +359,27 @@ namespace ULogView
         }
 
         // scroll::
+        #region Scroll
         private void UpdateScrollY()
         {
-            dispTopTime = topTime + pixTime.pixToTime(scrollBar2.Value) / zoomRate.Value;
+            //dispTopTime = topTime + pixTime.pixToTime(scrollBar2.Value) / zoomRate.Value;
+
             dispEndTime = GetDispEndTime();
         }
 
+        // X方向にスクロールする
         public bool ScrollX(int delta)
         {
             return ScrollXY(scrollBarH, delta);
         }
 
+        // Y方向にスクロールする
         public bool ScrollY(int delta)
         {
             return ScrollXY(scrollBarV, delta);
         }
 
+        // X/Yのスクロール処理(両対応)
         public bool ScrollXY(ScrollBar sb, int delta)
         {
             int oldValue = sb.Value;
@@ -440,26 +404,39 @@ namespace ULogView
             return false;
         }
 
+        // 下に１ページ分スクロール
         public bool ScrollDown()
         {
             return ScrollY(scrollBar2.LargeChange);
         }
 
+        // 上に１ページ分スクロール
         public bool ScrollUp()
         {
             return ScrollY(-scrollBar2.LargeChange);
         }
-        
 
+        #endregion Scroll
+
+
+        // draw::
         #region Draw
 
+        /// <summary>
+        /// 描画処理
+        /// </summary>
+        /// <param name="g"></param>
         public void Draw(Graphics g)
         {
             DrawBG(g);
             DrawLog(g);
         }
 
-        public void DrawBG(Graphics g)
+        /// <summary>
+        /// 背景の描画処理
+        /// </summary>
+        /// <param name="g"></param>
+        private void DrawBG(Graphics g)
         {
             using (Graphics g2 = Graphics.FromImage(image))
             {
@@ -483,7 +460,7 @@ namespace ULogView
                 g2.DrawString(String.Format("zoomRate:{0} pixTime.zoom:{1}", zoomRate, pixTime.Val), font1, Brushes.White, x0, y0);
                 y0 += 20;
 
-                if (direction == 0)
+                if (direction == ELogViewDir.Vertical)
                 {
                     DrawV(g2);
                 }
@@ -574,7 +551,7 @@ namespace ULogView
             UpdateScrollY();
 
             // クリッピング設定
-            Rectangle rect1 = new Rectangle(topMarginX, topMarginY, scrollBarH.LargeChange, scrollBarV.LargeChange);
+            Rectangle rect1 = new Rectangle(topMarginX, topMarginY, image.Width - (topMarginX + bottomMarginX), image.Height - (topMarginY + bottomMarginY));
             g.SetClip(rect1);
 
             g.FillRectangle(Brushes.DarkRed, rect1);
@@ -641,21 +618,40 @@ namespace ULogView
 
         }
 
-
-        // Document側で表示情報を更新
-        public void UpdateSBV(int value)
+        /**
+         * 表示用の情報を描画 for Debug
+         */
+        private void DrawParams(Graphics g, int _x, int _y)
         {
-            // スクロールバーに反映
-            scrollBarV.Value = value;
-            UpdateScrollY();
+            int x = _x;
+            int y = _y;
+            const int fontSize = 10;
+
+            g.DrawString(String.Format("TopTime:{0}", topTime), fontDebug, brushDebugText, x, y);
+            y += fontSize + 4;
+            g.DrawString(String.Format("EndTime:{0}", endTime), fontDebug, brushDebugText, x, y);
+            y += fontSize + 4;
+            g.DrawString(String.Format("DispTopTime:{0}", dispTopTime), fontDebug, brushDebugText, x, y);
+            y += fontSize + 4;
+            g.DrawString(String.Format("DispEndTime:{0}", dispEndTime), fontDebug, brushDebugText, x, y);
         }
 
-        // Document側で表示情報を更新
-        public void UpdateSBH(int value)
+        public void DrawLog(Graphics g)
         {
-            // スクロールバーに反映
-            scrollBarH.Value = value;
+
         }
+
+
+        // zoom::
+        #region Zoom
+        /**
+         * ズームバーを描画
+         */
+        public void DrawZoomBar(Graphics g)
+        {
+
+        }
+        #endregion Draw
 
 
         // zoom::
@@ -703,74 +699,53 @@ namespace ULogView
             scrollBar2.Maximum = (int)pixTime.timeToPix(dispEndTime - dispTopTime);
 
             // 0になると完全に表示されなくなるため下限は1
+            if (scrollBar1.Maximum < 1)
+            {
+                scrollBar1.Maximum = 1;
+            }
             if (scrollBar2.Maximum < 1)
             {
                 scrollBar2.Maximum = 1;
             }
 
-            if (scrollBarH.LargeChange > scrollBarH.Maximum)
+            scrollBarH.LargeChange = image.Width;
+            scrollBarV.LargeChange = image.Height;
+            
+
+            if (scrollBar1.LargeChange > scrollBar1.Maximum)
             {
-                scrollBarH.Enabled = false;
-                scrollBarH.LargeChange = scrollBarH.Maximum;
+                scrollBar1.Enabled = false;
+                scrollBar1.LargeChange = scrollBar1.Maximum;
             }
             else
             {
-                scrollBarH.Enabled = true;
+                scrollBar1.Enabled = true;
             }
 
-            if (scrollBarV.LargeChange > scrollBarV.Maximum)
+            if (scrollBar2.LargeChange > scrollBar2.Maximum)
             {
-                scrollBarH.Enabled = false;
-                scrollBarV.LargeChange = scrollBarV.Maximum;
+                scrollBar2.Enabled = false;
+                scrollBar2.LargeChange = scrollBar2.Maximum;
             }
             else
             {
-                scrollBarH.Enabled = true;
+                scrollBar2.Enabled = true;
             }
 
             delegateInvalidate();
         }
 
-        /**
-         * 表示用の情報を描画 for Debug
-         */
-        private void DrawParams(Graphics g, int _x, int _y)
-        {
-            int x = _x;
-            int y = _y;
-            const int fontSize = 10;
 
-            g.DrawString(String.Format("TopTime:{0}", topTime), fontDebug, brushDebugText, x, y);
-            y += fontSize + 4;
-            g.DrawString(String.Format("EndTime:{0}", endTime), fontDebug, brushDebugText, x, y);
-            y += fontSize + 4;
-            g.DrawString(String.Format("DispTopTime:{0}", dispTopTime), fontDebug, brushDebugText, x, y);
-            y += fontSize + 4;
-            g.DrawString(String.Format("DispEndTime:{0}", dispEndTime), fontDebug, brushDebugText, x, y);
-        }
-
-        public void DrawLog(Graphics g)
-        {
-
-        }
-
-        /**
-         * ズームバーを描画
-         */
-        public void DrawZoomBar(Graphics g)
-        {
-
-        }
-
-
-        #endregion
+        #endregion Zoom
 
         #region UI
         // UI::
-        
-        /**
-         * エリア表示用のTreeViewを更新する
-         */
+
+        /// <summary>
+        /// エリア表示用のTreeViewを更新する
+        /// </summary>
+        /// <param name="areaTree">更新対象のTreeView</param>
+        /// <returns></returns>
         public bool UpdateAreaTree(TreeView areaTree)
         {
             if (rootArea == null)
@@ -778,15 +753,19 @@ namespace ULogView
                 return false;
             }
 
-            areaTree.Nodes.Clear();
-
             // 全エリアをTreeに追加
+            areaTree.Nodes.Clear();
             areaTree.Nodes.Add("root");
             GetAreaNode(areaTree.Nodes[0], rootArea);
 
             return true;
         }
 
+        /// <summary>
+        /// 指定したTreeViewに指定のLogArea以下のノードをすべて追加する
+        /// </summary>
+        /// <param name="node">追加先のTreeViewのノード(ルート)</param>
+        /// <param name="area">追加元のエリア</param>
         private void GetAreaNode(TreeNode node, LogArea area)
         {
             if (area.ChildArea != null)
@@ -803,9 +782,11 @@ namespace ULogView
             }
         }
 
-        /**
-         * ログID用のCheckedListBoxを更新する
-         */
+        /// <summary>
+        /// ログID用のCheckedListBoxを更新する
+        /// </summary>
+        /// <param name="listBox">更新対象のListBox</param>
+        /// <returns></returns>
         public bool UpdateLogIDListBox(CheckedListBox listBox)
         {
             listBox.Items.Clear();
@@ -820,41 +801,8 @@ namespace ULogView
             }
             return true;
         }
-
-        public void ScrollV(int value)
-        {
-
-        }
-
-        public void ScrollH(int value)
-        {
-
-        }
-
-        public void PageDown()
-        {
-
-        }
-
-        public void PageUp()
-        {
-
-        }
         
         #endregion
-
-
-        // 拡大率を上げる(見える範囲を狭くする)
-        public void LVZoomIn()
-        {
-
-        }
-
-        // 拡大率を下げる(見える範囲を広くする)
-        public void LVZoomOut()
-        {
-
-        }
 
         
         #region LogID

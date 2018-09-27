@@ -215,7 +215,8 @@ namespace ULogView
         public LogViewPixTime()
         {
             // 1000pix = 1sec -> 1pix = 0.001sec = 1ms
-            pixTime = EPixTime.E1_0M;
+            //pixTime = EPixTime.E1_0M;
+            pixTime = EPixTime.E1_0U; 
         }
 
         //
