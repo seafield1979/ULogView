@@ -117,9 +117,9 @@
             // 
             this.panel1.Controls.Add(this.tabControl1);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Left;
-            this.panel1.Location = new System.Drawing.Point(0, 28);
+            this.panel1.Location = new System.Drawing.Point(0, 35);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(200, 449);
+            this.panel1.Size = new System.Drawing.Size(250, 649);
             this.panel1.TabIndex = 0;
             // 
             // tabControl1
@@ -130,7 +130,7 @@
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(200, 449);
+            this.tabControl1.Size = new System.Drawing.Size(250, 649);
             this.tabControl1.TabIndex = 0;
             this.tabControl1.Click += new System.EventHandler(this.tabControl1_Click);
             // 
@@ -138,10 +138,10 @@
             // 
             this.tabArea.AutoScroll = true;
             this.tabArea.Controls.Add(this.areaTree);
-            this.tabArea.Location = new System.Drawing.Point(4, 25);
+            this.tabArea.Location = new System.Drawing.Point(4, 28);
             this.tabArea.Name = "tabArea";
-            this.tabArea.Padding = new System.Windows.Forms.Padding(3);
-            this.tabArea.Size = new System.Drawing.Size(192, 420);
+            this.tabArea.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.tabArea.Size = new System.Drawing.Size(242, 617);
             this.tabArea.TabIndex = 0;
             this.tabArea.Text = "Area";
             this.tabArea.UseVisualStyleBackColor = true;
@@ -213,17 +213,17 @@
             treeNode30.Text = "ノード0";
             this.areaTree.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
             treeNode30});
-            this.areaTree.Size = new System.Drawing.Size(186, 414);
+            this.areaTree.Size = new System.Drawing.Size(236, 611);
             this.areaTree.TabIndex = 0;
             this.areaTree.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.areaTree_NodeMouseClick);
             // 
             // tabLogID
             // 
             this.tabLogID.Controls.Add(this.idListBox);
-            this.tabLogID.Location = new System.Drawing.Point(4, 25);
+            this.tabLogID.Location = new System.Drawing.Point(4, 28);
             this.tabLogID.Name = "tabLogID";
-            this.tabLogID.Padding = new System.Windows.Forms.Padding(3);
-            this.tabLogID.Size = new System.Drawing.Size(192, 420);
+            this.tabLogID.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.tabLogID.Size = new System.Drawing.Size(242, 617);
             this.tabLogID.TabIndex = 1;
             this.tabLogID.Text = "Logs";
             this.tabLogID.UseVisualStyleBackColor = true;
@@ -242,7 +242,7 @@
             "id5"});
             this.idListBox.Location = new System.Drawing.Point(3, 3);
             this.idListBox.Name = "idListBox";
-            this.idListBox.Size = new System.Drawing.Size(186, 414);
+            this.idListBox.Size = new System.Drawing.Size(236, 611);
             this.idListBox.TabIndex = 0;
             this.idListBox.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.idListBox_ItemCheck);
             this.idListBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.idListBox_MouseClick);
@@ -250,9 +250,9 @@
             // splitter1
             // 
             this.splitter1.BackColor = System.Drawing.SystemColors.ActiveCaption;
-            this.splitter1.Location = new System.Drawing.Point(200, 28);
+            this.splitter1.Location = new System.Drawing.Point(250, 35);
             this.splitter1.Name = "splitter1";
-            this.splitter1.Size = new System.Drawing.Size(10, 449);
+            this.splitter1.Size = new System.Drawing.Size(13, 649);
             this.splitter1.TabIndex = 1;
             this.splitter1.TabStop = false;
             // 
@@ -263,7 +263,8 @@
             this.ファイルFToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(812, 28);
+            this.menuStrip1.Padding = new System.Windows.Forms.Padding(7, 3, 0, 3);
+            this.menuStrip1.Size = new System.Drawing.Size(1477, 35);
             this.menuStrip1.TabIndex = 2;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -272,13 +273,13 @@
             this.ファイルFToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.終了XToolStripMenuItem});
             this.ファイルFToolStripMenuItem.Name = "ファイルFToolStripMenuItem";
-            this.ファイルFToolStripMenuItem.Size = new System.Drawing.Size(61, 24);
+            this.ファイルFToolStripMenuItem.Size = new System.Drawing.Size(69, 29);
             this.ファイルFToolStripMenuItem.Text = "File(&F)";
             // 
             // 終了XToolStripMenuItem
             // 
             this.終了XToolStripMenuItem.Name = "終了XToolStripMenuItem";
-            this.終了XToolStripMenuItem.Size = new System.Drawing.Size(127, 26);
+            this.終了XToolStripMenuItem.Size = new System.Drawing.Size(144, 30);
             this.終了XToolStripMenuItem.Text = "Exit(&X)";
             this.終了XToolStripMenuItem.Click += new System.EventHandler(this.終了XToolStripMenuItem_Click);
             // 
@@ -290,9 +291,9 @@
             this.panel2.Controls.Add(this.hScrollBar1);
             this.panel2.Controls.Add(this.panel3);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel2.Location = new System.Drawing.Point(210, 28);
+            this.panel2.Location = new System.Drawing.Point(263, 35);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(602, 449);
+            this.panel2.Size = new System.Drawing.Size(1214, 649);
             this.panel2.TabIndex = 3;
             this.panel2.Click += new System.EventHandler(this.panel2_Click);
             this.panel2.DragDrop += new System.Windows.Forms.DragEventHandler(this.panel2_DragDrop);
@@ -306,9 +307,9 @@
             // 
             // zoomDownButton
             // 
-            this.zoomDownButton.Location = new System.Drawing.Point(88, 2);
+            this.zoomDownButton.Location = new System.Drawing.Point(107, 3);
             this.zoomDownButton.Name = "zoomDownButton";
-            this.zoomDownButton.Size = new System.Drawing.Size(97, 23);
+            this.zoomDownButton.Size = new System.Drawing.Size(122, 27);
             this.zoomDownButton.TabIndex = 3;
             this.zoomDownButton.Text = "zoomDown";
             this.zoomDownButton.UseVisualStyleBackColor = true;
@@ -316,9 +317,9 @@
             // 
             // zoomUpButton
             // 
-            this.zoomUpButton.Location = new System.Drawing.Point(6, 3);
+            this.zoomUpButton.Location = new System.Drawing.Point(7, 3);
             this.zoomUpButton.Name = "zoomUpButton";
-            this.zoomUpButton.Size = new System.Drawing.Size(75, 23);
+            this.zoomUpButton.Size = new System.Drawing.Size(93, 27);
             this.zoomUpButton.TabIndex = 2;
             this.zoomUpButton.Text = "zoomUp";
             this.zoomUpButton.UseVisualStyleBackColor = true;
@@ -327,9 +328,9 @@
             // hScrollBar1
             // 
             this.hScrollBar1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.hScrollBar1.Location = new System.Drawing.Point(0, 428);
+            this.hScrollBar1.Location = new System.Drawing.Point(0, 628);
             this.hScrollBar1.Name = "hScrollBar1";
-            this.hScrollBar1.Size = new System.Drawing.Size(580, 21);
+            this.hScrollBar1.Size = new System.Drawing.Size(1187, 21);
             this.hScrollBar1.TabIndex = 1;
             this.hScrollBar1.Scroll += new System.Windows.Forms.ScrollEventHandler(this.hScrollBar1_Scroll);
             // 
@@ -338,9 +339,9 @@
             this.panel3.Controls.Add(this.vScrollBar1);
             this.panel3.Controls.Add(this.panel4);
             this.panel3.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panel3.Location = new System.Drawing.Point(580, 0);
+            this.panel3.Location = new System.Drawing.Point(1187, 0);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(22, 449);
+            this.panel3.Size = new System.Drawing.Size(27, 649);
             this.panel3.TabIndex = 0;
             // 
             // vScrollBar1
@@ -348,23 +349,23 @@
             this.vScrollBar1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.vScrollBar1.Location = new System.Drawing.Point(0, 0);
             this.vScrollBar1.Name = "vScrollBar1";
-            this.vScrollBar1.Size = new System.Drawing.Size(22, 427);
+            this.vScrollBar1.Size = new System.Drawing.Size(27, 622);
             this.vScrollBar1.TabIndex = 1;
             this.vScrollBar1.Scroll += new System.Windows.Forms.ScrollEventHandler(this.vScrollBar1_Scroll);
             // 
             // panel4
             // 
             this.panel4.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel4.Location = new System.Drawing.Point(0, 427);
+            this.panel4.Location = new System.Drawing.Point(0, 622);
             this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(22, 22);
+            this.panel4.Size = new System.Drawing.Size(27, 27);
             this.panel4.TabIndex = 0;
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(812, 477);
+            this.ClientSize = new System.Drawing.Size(1477, 684);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.splitter1);
             this.Controls.Add(this.panel1);

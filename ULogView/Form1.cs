@@ -366,7 +366,10 @@ namespace ULogView
             hScrollBar1.SetBounds(0, panel.Size.Height - barW - 100, panel.Size.Width - barW, barW);
 
             // 画像サイズを更新
-            documentLV.Resize(panel.Size.Width, panel.Size.Height);
+            if (documentLV != null)
+            {
+                documentLV.Resize(panel.Size.Width, panel.Size.Height);
+            }
 
             //panel1.Invalidate();
         }

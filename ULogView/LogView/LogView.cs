@@ -34,15 +34,16 @@ namespace ULogView
 
         const int fontSizeLane = 10;
         const int fontSizeDebug = 10;
-
-        // new
+        
         private int topMarginX = 140;
-        private int topMarginY = 120;
-        private int bottomMarginX = 100;
-        private int bottomMarginY = 100;
+        private int topMarginY = 200;
+        private int bottomMarginX = 50;
+        private int bottomMarginY = 50;
 
         private int intervalX = 100;
         private int intervalY = 100;
+
+        private int logAreaW, logAreaH;
 
         //
         // Properties pp::
@@ -155,12 +156,8 @@ namespace ULogView
             dispTopTime = 0.0;
             dispEndTime = GetDispEndTime();
 
-            scrollBar1.LargeChange = width - (topMarginX + bottomMarginX);
-            scrollBar2.LargeChange = height - (topMarginY + bottomMarginY);
 
-            scrollBar1.Maximum = 1000;
-            scrollBar2.Maximum = (int)pixTime.timeToPix(dispEndTime);
-
+            
             Resize(width, height);
 
             // create pens & brushes
@@ -209,6 +206,39 @@ namespace ULogView
                 image = new Bitmap(width, height);
                 redrawFlag = true;
                 SetDirection(direction);
+
+                // LogViewの描画エリアのサイズを変更
+                logAreaW = width - (topMarginX + bottomMarginX);
+                logAreaH = height - (topMarginY + bottomMarginY);
+
+                scrollBar1.Maximum = 1000;  // todo
+                scrollBar2.Maximum = (int)pixTime.timeToPix(endTime - topTime);
+
+                if (logAreaW > scrollBarH.Maximum)
+                {
+                    scrollBarH.LargeChange = scrollBarH.Maximum;
+                }
+                else
+                {
+                    scrollBarH.LargeChange = logAreaW;
+                }
+
+///                scrollBar2.LargeChange = logAreaH;
+                if (logAreaH > scrollBarV.Maximum)
+                {
+                    scrollBarV.LargeChange = scrollBarV.Maximum;
+                }
+                else
+                {
+                    scrollBarV.LargeChange = logAreaH;
+                }
+                
+                
+                //ChangeZoomRate();
+                // todo 縦横対応
+                dispEndTime = dispTopTime + pixTime.pixToTime(logAreaH);
+
+
             }
 
             delegateInvalidate();
@@ -325,8 +355,6 @@ namespace ULogView
                 scrollBar1 = scrollBarV;
                 scrollBar2 = scrollBarH;
             }
-
-            ChangeZoomRate();
         }
 
         /**
@@ -335,7 +363,7 @@ namespace ULogView
          */
         private double GetDispEndTime()
         {
-            double time = dispTopTime + (pixTime.pixToTime(scrollBar2.LargeChange + 200)) / zoomRate.Value;
+            double time = dispTopTime + (pixTime.pixToTime(logAreaH)) / zoomRate.Value;
 
             return time < endTime ? time : endTime;
         }
@@ -362,7 +390,7 @@ namespace ULogView
         #region Scroll
         private void UpdateScrollY()
         {
-            //dispTopTime = topTime + pixTime.pixToTime(scrollBar2.Value) / zoomRate.Value;
+            dispTopTime = topTime + pixTime.pixToTime(scrollBar2.Value) / zoomRate.Value;
 
             dispEndTime = GetDispEndTime();
         }
@@ -370,13 +398,17 @@ namespace ULogView
         // X方向にスクロールする
         public bool ScrollX(int delta)
         {
-            return ScrollXY(scrollBarH, delta);
+            bool ret = ScrollXY(scrollBarH, delta);
+            //UpdateScrollY();
+            return ret;
         }
 
         // Y方向にスクロールする
         public bool ScrollY(int delta)
         {
-            return ScrollXY(scrollBarV, delta);
+            bool ret = ScrollXY(scrollBarV, delta);
+            UpdateScrollY();
+            return ret;
         }
 
         // X/Yのスクロール処理(両対応)
@@ -401,6 +433,7 @@ namespace ULogView
             {
                 return true;
             }
+            
             return false;
         }
 
@@ -446,13 +479,14 @@ namespace ULogView
                 var font1 = new Font("Arial", 10);
 
                 // テキスト表示
-                int x0 = 10;
-                int y0 = 10;
+                int x0 = 50;
+                int y0 = 30;
 
                 g2.DrawString(String.Format("dispTopTime:{0} dispEndTime:{1}", dispTopTime, dispEndTime), font1, Brushes.White, x0, y0);
                 y0 += 20;
-                g2.DrawString(String.Format("[sbH] value:{0},large:{1} max:{2}", scrollBarH.Value, scrollBarH.LargeChange, scrollBarH.Maximum),
-                    font1, Brushes.White, x0, y0);
+                g2.DrawString(String.Format("TopTime:{0} EndTime:{1}", topTime, endTime), font1, Brushes.White, x0, y0);
+                //g2.DrawString(String.Format("[sbH] value:{0},large:{1} max:{2}", scrollBarH.Value, scrollBarH.LargeChange, scrollBarH.Maximum),
+                //    font1, Brushes.White, x0, y0);
                 y0 += 20;
                 g2.DrawString(String.Format("[sbV] value:{0},large:{1} max:{2}", scrollBarV.Value, scrollBarV.LargeChange, scrollBarV.Maximum),
                     font1, Brushes.White, x0, y0);
@@ -475,6 +509,7 @@ namespace ULogView
         // 横にログが進んでいく描画モード
         private void DrawH(Graphics g)
         {
+#if false
             UpdateScrollY();
 
             // クリッピング設定
@@ -543,18 +578,19 @@ namespace ULogView
                     font2, Brushes.Yellow, topMarginX + x, topMarginY - 5, sf1);
                 x += intervalX2;
             }
+#endif
         }
 
         // 縦(下)にログが進んでいくモード
         private void DrawV(Graphics g)
         {
-            UpdateScrollY();
+            //UpdateScrollY();
 
             // クリッピング設定
             Rectangle rect1 = new Rectangle(topMarginX, topMarginY, image.Width - (topMarginX + bottomMarginX), image.Height - (topMarginY + bottomMarginY));
             g.SetClip(rect1);
 
-            g.FillRectangle(Brushes.DarkRed, rect1);
+            g.FillRectangle(Brushes.DarkSlateBlue, rect1);
 
             int x = -(scrollBarH.Value % intervalX);
             int y = -(scrollBarV.Value % intervalY);
@@ -643,7 +679,7 @@ namespace ULogView
 
 
         // zoom::
-        #region Zoom
+#region Zoom
         /**
          * ズームバーを描画
          */
@@ -651,7 +687,7 @@ namespace ULogView
         {
 
         }
-        #endregion Draw
+#endregion Draw
 
 
         // zoom::
@@ -696,7 +732,7 @@ namespace ULogView
             // 拡大したときの動作としてスクロールバーのmaxが変化するパターンと
             // LargeChangeが変化するパターンがあるが、ここではmaxが変換するパターンを採用
             scrollBar1.Maximum = (int)(1000 * zoomRate.Value);
-            scrollBar2.Maximum = (int)pixTime.timeToPix(dispEndTime - dispTopTime);
+            scrollBar2.Maximum = (int)pixTime.timeToPix(endTime - topTime);
 
             // 0になると完全に表示されなくなるため下限は1
             if (scrollBar1.Maximum < 1)
@@ -708,10 +744,11 @@ namespace ULogView
                 scrollBar2.Maximum = 1;
             }
 
-            scrollBarH.LargeChange = image.Width;
-            scrollBarV.LargeChange = image.Height;
+            dispEndTime = dispTopTime + pixTime.pixToTime(logAreaH);
             
-
+            scrollBarV.LargeChange = (int)pixTime.timeToPix(dispEndTime - dispTopTime);
+            
+            // スクロールバーのLargeChangeよりもMaximum が小さくなったらバーを非表示にする
             if (scrollBar1.LargeChange > scrollBar1.Maximum)
             {
                 scrollBar1.Enabled = false;
@@ -731,14 +768,15 @@ namespace ULogView
             {
                 scrollBar2.Enabled = true;
             }
+            
 
             delegateInvalidate();
         }
 
 
-        #endregion Zoom
+#endregion Zoom
 
-        #region UI
+#region UI
         // UI::
 
         /// <summary>
@@ -802,14 +840,14 @@ namespace ULogView
             return true;
         }
         
-        #endregion
+#endregion
 
         
-        #region LogID
+#region LogID
 
-        #endregion
+#endregion
 
-        #region Debug
+#region Debug
 
         public void DebugPrint()
         {
@@ -833,7 +871,7 @@ namespace ULogView
                 Debug.WriteLine(rootArea);
             }
         }
-        #endregion
+#endregion
 
     }
 
