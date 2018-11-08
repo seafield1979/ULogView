@@ -475,6 +475,7 @@ namespace ULogView
 
         private void vScrollBar1_Scroll(object sender, ScrollEventArgs e)
         {
+            documentLV.logview.ScrollY(0);
             panel2.Invalidate();
         }
 
@@ -529,6 +530,12 @@ namespace ULogView
         #endregion Button
 
         #endregion Event
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            documentLV.logview.ToggleDirection();
+            panel2.Invalidate();
+        }
     }
 }
  

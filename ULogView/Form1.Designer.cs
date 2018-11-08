@@ -104,6 +104,7 @@
             this.panel3 = new System.Windows.Forms.Panel();
             this.vScrollBar1 = new System.Windows.Forms.VScrollBar();
             this.panel4 = new System.Windows.Forms.Panel();
+            this.button1 = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabArea.SuspendLayout();
@@ -140,7 +141,7 @@
             this.tabArea.Controls.Add(this.areaTree);
             this.tabArea.Location = new System.Drawing.Point(4, 28);
             this.tabArea.Name = "tabArea";
-            this.tabArea.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.tabArea.Padding = new System.Windows.Forms.Padding(3);
             this.tabArea.Size = new System.Drawing.Size(242, 617);
             this.tabArea.TabIndex = 0;
             this.tabArea.Text = "Area";
@@ -222,7 +223,7 @@
             this.tabLogID.Controls.Add(this.idListBox);
             this.tabLogID.Location = new System.Drawing.Point(4, 28);
             this.tabLogID.Name = "tabLogID";
-            this.tabLogID.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.tabLogID.Padding = new System.Windows.Forms.Padding(3);
             this.tabLogID.Size = new System.Drawing.Size(242, 617);
             this.tabLogID.TabIndex = 1;
             this.tabLogID.Text = "Logs";
@@ -286,6 +287,7 @@
             // panel2
             // 
             this.panel2.AllowDrop = true;
+            this.panel2.Controls.Add(this.button1);
             this.panel2.Controls.Add(this.zoomDownButton);
             this.panel2.Controls.Add(this.zoomUpButton);
             this.panel2.Controls.Add(this.hScrollBar1);
@@ -361,6 +363,16 @@
             this.panel4.Size = new System.Drawing.Size(27, 27);
             this.panel4.TabIndex = 0;
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(235, 3);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(91, 27);
+            this.button1.TabIndex = 4;
+            this.button1.Text = "dirSwitch";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 18F);
@@ -409,6 +421,7 @@
         private System.Windows.Forms.Panel panel4;
         private System.Windows.Forms.Button zoomUpButton;
         private System.Windows.Forms.Button zoomDownButton;
+        private System.Windows.Forms.Button button1;
     }
 }
 
