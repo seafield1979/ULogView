@@ -43,6 +43,8 @@ namespace ULogView
         private int intervalX = 100;
         private int intervalY = 100;
 
+        private int laneLen = 100;
+
         private int logAreaW, logAreaH;
 
         //
@@ -210,7 +212,7 @@ namespace ULogView
                 logAreaH = height - (topMarginY + bottomMarginY);
 
                 scrollBarLane.Maximum = GetLaneLength();
-                scrollBarTime.Maximum = (int)pixTime.timeToPix(endTime - topTime);
+                scrollBarTime.Maximum = (int)pixTime.timeToPix(endTime - topTime, zoomRate.Value);
 
                 if (logAreaW > scrollBarH.Maximum)
                 {
@@ -220,8 +222,7 @@ namespace ULogView
                 {
                     scrollBarH.LargeChange = logAreaW;
                 }
-
-///                scrollBar2.LargeChange = logAreaH;
+                
                 if (logAreaH > scrollBarV.Maximum)
                 {
                     scrollBarV.LargeChange = scrollBarV.Maximum;
@@ -286,7 +287,7 @@ namespace ULogView
                 dispTopTime = topTime;
                 dispEndTime = GetDispEndTime();
 
-                dispAreaLen = pixTime.timeToPix(endTime);
+                dispAreaLen = pixTime.timeToPix(endTime, zoomRate.Value);
 
                 ChangeZoomRate();
 
@@ -399,18 +400,27 @@ namespace ULogView
 
         // scroll::
         #region Scroll
-        public void UpdateScrollY()
+        public void UpdateTimeScroll()
         {
-            dispTopTime = topTime + pixTime.pixToTime(scrollBarTime.Value) / zoomRate.Value;
-
-            dispEndTime = GetDispEndTime();
+            if (direction == ELogViewDir.Horizontal)
+            {
+                dispTopTime = topTime + pixTime.pixToTime(scrollBarTime.Value) / zoomRate.Value;
+            }
+            else
+            {
+                dispTopTime = topTime + pixTime.pixToTime(scrollBarTime.Value) / zoomRate.Value;
+                dispEndTime = GetDispEndTime();
+            }
         }
 
         // X方向にスクロールする
         public bool ScrollX(int delta)
         {
             bool ret = ScrollXY(scrollBarH, delta);
-            //UpdateScrollY();
+            if (direction == ELogViewDir.Horizontal)
+            {
+                UpdateTimeScroll();
+            }
             return ret;
         }
 
@@ -418,7 +428,11 @@ namespace ULogView
         public bool ScrollY(int delta)
         {
             bool ret = ScrollXY(scrollBarV, delta);
-            UpdateScrollY();
+            if (direction == ELogViewDir.Vertical)
+            {
+                UpdateTimeScroll();
+                ChangeZoomRate();
+            }
             return ret;
         }
 
@@ -535,7 +549,7 @@ namespace ULogView
             int y = -(scrollBarV.Value % intervalY);
             int intervalX2 = (int)(intervalX * zoomRate.Value);
             int intervalY2 = (int)(intervalY * zoomRate.Value);
-            int height = (int)(GetLaneLength() * zoomRate.Value);
+            int height = (int)GetLaneLength();
             int width = image.Width - bottomMarginX;
 
             if (height > image.Height - (bottomMarginY + topMarginY))
@@ -543,9 +557,9 @@ namespace ULogView
                 height = image.Height - (bottomMarginY + bottomMarginY);
             }
 
-            if (pixTime.timeToPix(endTime - topTime) < (ulong)width)
+            if (pixTime.timeToPix(endTime - topTime, zoomRate.Value) < (ulong)width)
             {
-                width = (int)pixTime.timeToPix(endTime - topTime);
+                width = (int)pixTime.timeToPix(endTime - topTime, zoomRate.Value);
             }
 
             //--------------------------------
@@ -623,11 +637,11 @@ namespace ULogView
 
             g.FillRectangle(Brushes.DarkSlateBlue, rect1);
 
-            int x = -(scrollBarH.Value % intervalX);
-            int y = -(scrollBarV.Value % intervalY);
             int intervalX2 = (int)(intervalX * zoomRate.Value);
             int intervalY2 = (int)(intervalY * zoomRate.Value);
-            int width = (int)(GetLaneLength() * zoomRate.Value);
+            int x = -(scrollBarH.Value % intervalX2);
+            int y = -(scrollBarV.Value % intervalY2);
+            int width = (int)GetLaneLength();
             int height = image.Height - bottomMarginY;
 
             if (width > image.Width - (bottomMarginX + topMarginX))
@@ -635,9 +649,9 @@ namespace ULogView
                 width = image.Width - (bottomMarginX + bottomMarginX);
             }
 
-            if (pixTime.timeToPix(endTime - topTime) < (ulong)height)
+            if (pixTime.timeToPix(endTime - topTime, zoomRate.Value) < (ulong)height)
             {
-                height = (int)pixTime.timeToPix(endTime - topTime);
+                height = (int)pixTime.timeToPix(endTime - topTime, zoomRate.Value);
             }
 
             //--------------------------------
@@ -682,10 +696,12 @@ namespace ULogView
             sf1.LineAlignment = StringAlignment.Center;
 
             // 横のテキスト用のクリッピングエリア設定
-            Rectangle rect2 = new Rectangle(0, topMarginY - 10, topMarginX + image.Width + 1000, image.Height - topMarginY + 10);
+            Rectangle rect2 = new Rectangle(0, topMarginY - 10, topMarginX + image.Width + 100, image.Height - topMarginY + 10);
             g.SetClip(rect2);
 
             // 横のテキスト
+            sf1.Alignment = StringAlignment.Far;
+            sf1.LineAlignment = StringAlignment.Center;
             while (y < scrollBarTime.LargeChange)
             {
                 double time = dispTopTime + pixTime.pixToTime(y) / zoomRate.Value;
@@ -695,7 +711,7 @@ namespace ULogView
             }
 
             // 縦のテキスト
-            Rectangle rect3 = new Rectangle(topMarginX - 10, 0, scrollBarH.LargeChange + 10, image.Height - topMarginY);
+            Rectangle rect3 = new Rectangle(topMarginX - 10, 0, scrollBarH.LargeChange + 100, image.Height - topMarginY);
             g.SetClip(rect3);
             sf1.Alignment = StringAlignment.Center;
             sf1.LineAlignment = StringAlignment.Far;
@@ -732,7 +748,27 @@ namespace ULogView
 
         public int GetLaneLength()
         {
-            return 1000;
+            if (lanes == null)
+            {
+                return 0;
+            }
+            return (int)(lanes.Count * laneLen * zoomRate.Value);
+        }
+
+        /// <summary>
+        /// 描画領域のレーン方向の長さを取得する
+        /// </summary>
+        /// <returns></returns>
+        public int GetLaneAreaLength()
+        {
+            if (direction == ELogViewDir.Horizontal)
+            {
+                return GetLaneLength() - (bottomMarginY - topMarginY);
+            }
+            else
+            {
+                return GetLaneLength() - (bottomMarginX - topMarginX);
+            }
         }
 
         // zoom::
@@ -786,10 +822,12 @@ namespace ULogView
         // 拡大率が変化したときの処理
         private void ChangeZoomRate()
         {
+            dispTopTime = topTime + pixTime.pixToTime(scrollBarTime.Value) / zoomRate.Value;
+
             // 拡大したときの動作としてスクロールバーのmaxが変化するパターンと
             // LargeChangeが変化するパターンがあるが、ここではmaxが変換するパターンを採用
-            scrollBarLane.Maximum = (int)(GetLaneLength() * zoomRate.Value);
-            scrollBarTime.Maximum = (int)pixTime.timeToPix(endTime - topTime);
+            scrollBarLane.Maximum = (int)GetLaneLength();
+            scrollBarTime.Maximum = (int)(pixTime.timeToPix(endTime - topTime, zoomRate.Value) * zoomRate.Value);
 
             // 0になると完全に表示されなくなるため下限は1
             if (scrollBarLane.Maximum < 1)
@@ -803,7 +841,8 @@ namespace ULogView
 
             dispEndTime = GetDispEndTime();
             
-            scrollBarTime.LargeChange = (int)pixTime.timeToPix(dispEndTime - dispTopTime);
+            scrollBarTime.LargeChange = (int)pixTime.timeToPix(dispEndTime - dispTopTime, zoomRate.Value);
+            scrollBarLane.LargeChange = (int)GetLaneAreaLength();
             
             // スクロールバーのLargeChangeよりもMaximum が小さくなったらバーを非表示にする
             if (scrollBarLane.LargeChange > scrollBarLane.Maximum)

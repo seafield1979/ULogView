@@ -116,6 +116,11 @@ namespace ULogView
         //
         List<Lane> lanes;
 
+        public int Count
+        {
+            get { return lanes.Count; }
+        }
+
         //
         // Constructor
         //
@@ -138,6 +143,7 @@ namespace ULogView
         //
         // Methods
         //
+        
         /**
          * レーンを１件追加する(パラメータ)
          * 

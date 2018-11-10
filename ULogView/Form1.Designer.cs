@@ -28,65 +28,65 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("ノード1");
-            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("ノード2");
-            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("ノード3");
-            System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("ノード4");
-            System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("ノード5");
-            System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("ノード6");
-            System.Windows.Forms.TreeNode treeNode7 = new System.Windows.Forms.TreeNode("ノード7");
-            System.Windows.Forms.TreeNode treeNode8 = new System.Windows.Forms.TreeNode("ノード8");
-            System.Windows.Forms.TreeNode treeNode9 = new System.Windows.Forms.TreeNode("ノード9");
-            System.Windows.Forms.TreeNode treeNode10 = new System.Windows.Forms.TreeNode("ノード10");
-            System.Windows.Forms.TreeNode treeNode11 = new System.Windows.Forms.TreeNode("ノード11");
-            System.Windows.Forms.TreeNode treeNode12 = new System.Windows.Forms.TreeNode("ノード12");
-            System.Windows.Forms.TreeNode treeNode13 = new System.Windows.Forms.TreeNode("ノード13");
-            System.Windows.Forms.TreeNode treeNode14 = new System.Windows.Forms.TreeNode("ノード14");
-            System.Windows.Forms.TreeNode treeNode15 = new System.Windows.Forms.TreeNode("ノード15");
-            System.Windows.Forms.TreeNode treeNode16 = new System.Windows.Forms.TreeNode("ノード16");
-            System.Windows.Forms.TreeNode treeNode17 = new System.Windows.Forms.TreeNode("ノード17");
-            System.Windows.Forms.TreeNode treeNode18 = new System.Windows.Forms.TreeNode("ノード18");
-            System.Windows.Forms.TreeNode treeNode19 = new System.Windows.Forms.TreeNode("ノード19");
-            System.Windows.Forms.TreeNode treeNode20 = new System.Windows.Forms.TreeNode("ノード20");
-            System.Windows.Forms.TreeNode treeNode21 = new System.Windows.Forms.TreeNode("ノード21");
-            System.Windows.Forms.TreeNode treeNode22 = new System.Windows.Forms.TreeNode("ノード22");
-            System.Windows.Forms.TreeNode treeNode23 = new System.Windows.Forms.TreeNode("ノード23");
-            System.Windows.Forms.TreeNode treeNode24 = new System.Windows.Forms.TreeNode("ノード24");
-            System.Windows.Forms.TreeNode treeNode25 = new System.Windows.Forms.TreeNode("ノード25");
-            System.Windows.Forms.TreeNode treeNode26 = new System.Windows.Forms.TreeNode("ノード26");
-            System.Windows.Forms.TreeNode treeNode27 = new System.Windows.Forms.TreeNode("ノード27");
-            System.Windows.Forms.TreeNode treeNode28 = new System.Windows.Forms.TreeNode("ノード28");
-            System.Windows.Forms.TreeNode treeNode29 = new System.Windows.Forms.TreeNode("ノード29");
-            System.Windows.Forms.TreeNode treeNode30 = new System.Windows.Forms.TreeNode("ノード0", new System.Windows.Forms.TreeNode[] {
-            treeNode1,
-            treeNode2,
-            treeNode3,
-            treeNode4,
-            treeNode5,
-            treeNode6,
-            treeNode7,
-            treeNode8,
-            treeNode9,
-            treeNode10,
-            treeNode11,
-            treeNode12,
-            treeNode13,
-            treeNode14,
-            treeNode15,
-            treeNode16,
-            treeNode17,
-            treeNode18,
-            treeNode19,
-            treeNode20,
-            treeNode21,
-            treeNode22,
-            treeNode23,
-            treeNode24,
-            treeNode25,
-            treeNode26,
-            treeNode27,
-            treeNode28,
-            treeNode29});
+            System.Windows.Forms.TreeNode treeNode31 = new System.Windows.Forms.TreeNode("ノード1");
+            System.Windows.Forms.TreeNode treeNode32 = new System.Windows.Forms.TreeNode("ノード2");
+            System.Windows.Forms.TreeNode treeNode33 = new System.Windows.Forms.TreeNode("ノード3");
+            System.Windows.Forms.TreeNode treeNode34 = new System.Windows.Forms.TreeNode("ノード4");
+            System.Windows.Forms.TreeNode treeNode35 = new System.Windows.Forms.TreeNode("ノード5");
+            System.Windows.Forms.TreeNode treeNode36 = new System.Windows.Forms.TreeNode("ノード6");
+            System.Windows.Forms.TreeNode treeNode37 = new System.Windows.Forms.TreeNode("ノード7");
+            System.Windows.Forms.TreeNode treeNode38 = new System.Windows.Forms.TreeNode("ノード8");
+            System.Windows.Forms.TreeNode treeNode39 = new System.Windows.Forms.TreeNode("ノード9");
+            System.Windows.Forms.TreeNode treeNode40 = new System.Windows.Forms.TreeNode("ノード10");
+            System.Windows.Forms.TreeNode treeNode41 = new System.Windows.Forms.TreeNode("ノード11");
+            System.Windows.Forms.TreeNode treeNode42 = new System.Windows.Forms.TreeNode("ノード12");
+            System.Windows.Forms.TreeNode treeNode43 = new System.Windows.Forms.TreeNode("ノード13");
+            System.Windows.Forms.TreeNode treeNode44 = new System.Windows.Forms.TreeNode("ノード14");
+            System.Windows.Forms.TreeNode treeNode45 = new System.Windows.Forms.TreeNode("ノード15");
+            System.Windows.Forms.TreeNode treeNode46 = new System.Windows.Forms.TreeNode("ノード16");
+            System.Windows.Forms.TreeNode treeNode47 = new System.Windows.Forms.TreeNode("ノード17");
+            System.Windows.Forms.TreeNode treeNode48 = new System.Windows.Forms.TreeNode("ノード18");
+            System.Windows.Forms.TreeNode treeNode49 = new System.Windows.Forms.TreeNode("ノード19");
+            System.Windows.Forms.TreeNode treeNode50 = new System.Windows.Forms.TreeNode("ノード20");
+            System.Windows.Forms.TreeNode treeNode51 = new System.Windows.Forms.TreeNode("ノード21");
+            System.Windows.Forms.TreeNode treeNode52 = new System.Windows.Forms.TreeNode("ノード22");
+            System.Windows.Forms.TreeNode treeNode53 = new System.Windows.Forms.TreeNode("ノード23");
+            System.Windows.Forms.TreeNode treeNode54 = new System.Windows.Forms.TreeNode("ノード24");
+            System.Windows.Forms.TreeNode treeNode55 = new System.Windows.Forms.TreeNode("ノード25");
+            System.Windows.Forms.TreeNode treeNode56 = new System.Windows.Forms.TreeNode("ノード26");
+            System.Windows.Forms.TreeNode treeNode57 = new System.Windows.Forms.TreeNode("ノード27");
+            System.Windows.Forms.TreeNode treeNode58 = new System.Windows.Forms.TreeNode("ノード28");
+            System.Windows.Forms.TreeNode treeNode59 = new System.Windows.Forms.TreeNode("ノード29");
+            System.Windows.Forms.TreeNode treeNode60 = new System.Windows.Forms.TreeNode("ノード0", new System.Windows.Forms.TreeNode[] {
+            treeNode31,
+            treeNode32,
+            treeNode33,
+            treeNode34,
+            treeNode35,
+            treeNode36,
+            treeNode37,
+            treeNode38,
+            treeNode39,
+            treeNode40,
+            treeNode41,
+            treeNode42,
+            treeNode43,
+            treeNode44,
+            treeNode45,
+            treeNode46,
+            treeNode47,
+            treeNode48,
+            treeNode49,
+            treeNode50,
+            treeNode51,
+            treeNode52,
+            treeNode53,
+            treeNode54,
+            treeNode55,
+            treeNode56,
+            treeNode57,
+            treeNode58,
+            treeNode59});
             this.panel1 = new System.Windows.Forms.Panel();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabArea = new System.Windows.Forms.TabPage();
@@ -98,13 +98,15 @@
             this.ファイルFToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.終了XToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panel2 = new ULogView.DoubleBufferingPanel();
+            this.button1 = new System.Windows.Forms.Button();
             this.zoomDownButton = new System.Windows.Forms.Button();
             this.zoomUpButton = new System.Windows.Forms.Button();
             this.hScrollBar1 = new System.Windows.Forms.HScrollBar();
             this.panel3 = new System.Windows.Forms.Panel();
             this.vScrollBar1 = new System.Windows.Forms.VScrollBar();
             this.panel4 = new System.Windows.Forms.Panel();
-            this.button1 = new System.Windows.Forms.Button();
+            this.button2 = new System.Windows.Forms.Button();
+            this.button3 = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabArea.SuspendLayout();
@@ -152,68 +154,68 @@
             this.areaTree.Dock = System.Windows.Forms.DockStyle.Fill;
             this.areaTree.Location = new System.Drawing.Point(3, 3);
             this.areaTree.Name = "areaTree";
-            treeNode1.Name = "ノード1";
-            treeNode1.Text = "ノード1";
-            treeNode2.Name = "ノード2";
-            treeNode2.Text = "ノード2";
-            treeNode3.Name = "ノード3";
-            treeNode3.Text = "ノード3";
-            treeNode4.Name = "ノード4";
-            treeNode4.Text = "ノード4";
-            treeNode5.Name = "ノード5";
-            treeNode5.Text = "ノード5";
-            treeNode6.Name = "ノード6";
-            treeNode6.Text = "ノード6";
-            treeNode7.Name = "ノード7";
-            treeNode7.Text = "ノード7";
-            treeNode8.Name = "ノード8";
-            treeNode8.Text = "ノード8";
-            treeNode9.Name = "ノード9";
-            treeNode9.Text = "ノード9";
-            treeNode10.Name = "ノード10";
-            treeNode10.Text = "ノード10";
-            treeNode11.Name = "ノード11";
-            treeNode11.Text = "ノード11";
-            treeNode12.Name = "ノード12";
-            treeNode12.Text = "ノード12";
-            treeNode13.Name = "ノード13";
-            treeNode13.Text = "ノード13";
-            treeNode14.Name = "ノード14";
-            treeNode14.Text = "ノード14";
-            treeNode15.Name = "ノード15";
-            treeNode15.Text = "ノード15";
-            treeNode16.Name = "ノード16";
-            treeNode16.Text = "ノード16";
-            treeNode17.Name = "ノード17";
-            treeNode17.Text = "ノード17";
-            treeNode18.Name = "ノード18";
-            treeNode18.Text = "ノード18";
-            treeNode19.Name = "ノード19";
-            treeNode19.Text = "ノード19";
-            treeNode20.Name = "ノード20";
-            treeNode20.Text = "ノード20";
-            treeNode21.Name = "ノード21";
-            treeNode21.Text = "ノード21";
-            treeNode22.Name = "ノード22";
-            treeNode22.Text = "ノード22";
-            treeNode23.Name = "ノード23";
-            treeNode23.Text = "ノード23";
-            treeNode24.Name = "ノード24";
-            treeNode24.Text = "ノード24";
-            treeNode25.Name = "ノード25";
-            treeNode25.Text = "ノード25";
-            treeNode26.Name = "ノード26";
-            treeNode26.Text = "ノード26";
-            treeNode27.Name = "ノード27";
-            treeNode27.Text = "ノード27";
-            treeNode28.Name = "ノード28";
-            treeNode28.Text = "ノード28";
-            treeNode29.Name = "ノード29";
-            treeNode29.Text = "ノード29";
-            treeNode30.Name = "ノード0";
-            treeNode30.Text = "ノード0";
+            treeNode31.Name = "ノード1";
+            treeNode31.Text = "ノード1";
+            treeNode32.Name = "ノード2";
+            treeNode32.Text = "ノード2";
+            treeNode33.Name = "ノード3";
+            treeNode33.Text = "ノード3";
+            treeNode34.Name = "ノード4";
+            treeNode34.Text = "ノード4";
+            treeNode35.Name = "ノード5";
+            treeNode35.Text = "ノード5";
+            treeNode36.Name = "ノード6";
+            treeNode36.Text = "ノード6";
+            treeNode37.Name = "ノード7";
+            treeNode37.Text = "ノード7";
+            treeNode38.Name = "ノード8";
+            treeNode38.Text = "ノード8";
+            treeNode39.Name = "ノード9";
+            treeNode39.Text = "ノード9";
+            treeNode40.Name = "ノード10";
+            treeNode40.Text = "ノード10";
+            treeNode41.Name = "ノード11";
+            treeNode41.Text = "ノード11";
+            treeNode42.Name = "ノード12";
+            treeNode42.Text = "ノード12";
+            treeNode43.Name = "ノード13";
+            treeNode43.Text = "ノード13";
+            treeNode44.Name = "ノード14";
+            treeNode44.Text = "ノード14";
+            treeNode45.Name = "ノード15";
+            treeNode45.Text = "ノード15";
+            treeNode46.Name = "ノード16";
+            treeNode46.Text = "ノード16";
+            treeNode47.Name = "ノード17";
+            treeNode47.Text = "ノード17";
+            treeNode48.Name = "ノード18";
+            treeNode48.Text = "ノード18";
+            treeNode49.Name = "ノード19";
+            treeNode49.Text = "ノード19";
+            treeNode50.Name = "ノード20";
+            treeNode50.Text = "ノード20";
+            treeNode51.Name = "ノード21";
+            treeNode51.Text = "ノード21";
+            treeNode52.Name = "ノード22";
+            treeNode52.Text = "ノード22";
+            treeNode53.Name = "ノード23";
+            treeNode53.Text = "ノード23";
+            treeNode54.Name = "ノード24";
+            treeNode54.Text = "ノード24";
+            treeNode55.Name = "ノード25";
+            treeNode55.Text = "ノード25";
+            treeNode56.Name = "ノード26";
+            treeNode56.Text = "ノード26";
+            treeNode57.Name = "ノード27";
+            treeNode57.Text = "ノード27";
+            treeNode58.Name = "ノード28";
+            treeNode58.Text = "ノード28";
+            treeNode59.Name = "ノード29";
+            treeNode59.Text = "ノード29";
+            treeNode60.Name = "ノード0";
+            treeNode60.Text = "ノード0";
             this.areaTree.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode30});
+            treeNode60});
             this.areaTree.Size = new System.Drawing.Size(236, 611);
             this.areaTree.TabIndex = 0;
             this.areaTree.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.areaTree_NodeMouseClick);
@@ -287,6 +289,8 @@
             // panel2
             // 
             this.panel2.AllowDrop = true;
+            this.panel2.Controls.Add(this.button3);
+            this.panel2.Controls.Add(this.button2);
             this.panel2.Controls.Add(this.button1);
             this.panel2.Controls.Add(this.zoomDownButton);
             this.panel2.Controls.Add(this.zoomUpButton);
@@ -307,9 +311,19 @@
             this.panel2.MouseUp += new System.Windows.Forms.MouseEventHandler(this.panel2_MouseUp);
             this.panel2.Resize += new System.EventHandler(this.panel2_Resize);
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(300, 5);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(91, 27);
+            this.button1.TabIndex = 4;
+            this.button1.Text = "dirSwitch";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // zoomDownButton
             // 
-            this.zoomDownButton.Location = new System.Drawing.Point(107, 3);
+            this.zoomDownButton.Location = new System.Drawing.Point(7, 28);
             this.zoomDownButton.Name = "zoomDownButton";
             this.zoomDownButton.Size = new System.Drawing.Size(122, 27);
             this.zoomDownButton.TabIndex = 3;
@@ -321,7 +335,7 @@
             // 
             this.zoomUpButton.Location = new System.Drawing.Point(7, 3);
             this.zoomUpButton.Name = "zoomUpButton";
-            this.zoomUpButton.Size = new System.Drawing.Size(93, 27);
+            this.zoomUpButton.Size = new System.Drawing.Size(122, 27);
             this.zoomUpButton.TabIndex = 2;
             this.zoomUpButton.Text = "zoomUp";
             this.zoomUpButton.UseVisualStyleBackColor = true;
@@ -363,15 +377,25 @@
             this.panel4.Size = new System.Drawing.Size(27, 27);
             this.panel4.TabIndex = 0;
             // 
-            // button1
+            // button2
             // 
-            this.button1.Location = new System.Drawing.Point(235, 3);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(91, 27);
-            this.button1.TabIndex = 4;
-            this.button1.Text = "dirSwitch";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.button2.Location = new System.Drawing.Point(135, 5);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(104, 25);
+            this.button2.TabIndex = 5;
+            this.button2.Text = "zoomUpS";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // button3
+            // 
+            this.button3.Location = new System.Drawing.Point(135, 31);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(104, 27);
+            this.button3.TabIndex = 6;
+            this.button3.Text = "zoomDownS";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
             // Form1
             // 
@@ -422,6 +446,8 @@
         private System.Windows.Forms.Button zoomUpButton;
         private System.Windows.Forms.Button zoomDownButton;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Button button2;
     }
 }
 

@@ -518,11 +518,13 @@ namespace ULogView
         // button::
         #region Button
 
+        // 表示時間をズームアップ（見える範囲を狭く）
         private void zoomUpButton_Click(object sender, EventArgs e)
         {
             documentLV.logview.PixTimeZoomUp();
         }
 
+        // 表示時間をズームダウン（見える範囲を広い）
         private void zoomDownButton_Click(object sender, EventArgs e)
         {
             documentLV.logview.PixTimeZoomDown();
@@ -535,6 +537,18 @@ namespace ULogView
         {
             documentLV.logview.ToggleDirection();
             panel2.Invalidate();
+        }
+
+        // 全体ズームアップ
+        private void button2_Click(object sender, EventArgs e)
+        {
+            documentLV.logview.ZoomUp();
+        }
+
+        // 全体ズームダウン
+        private void button3_Click(object sender, EventArgs e)
+        {
+            documentLV.logview.ZoomDown();
         }
     }
 }
