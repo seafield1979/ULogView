@@ -571,7 +571,14 @@ namespace ULogView
                             }
                             break;
                         case "id":
-                            log.ID = UInt32.Parse(kvp.Value);
+                            {
+                                log.ID = UInt32.Parse(kvp.Value);
+                                LogID logId = logIDs[(int)log.ID];
+                                if (logId != null)
+                                {
+                                    log.Color = logId.Color;
+                                }
+                            }
                             break;
                         case "lane":
                             log.LaneId = Byte.Parse(kvp.Value);
@@ -582,9 +589,9 @@ namespace ULogView
                         case "text":
                             log.Text = kvp.Value;
                             break;
-                        case "color":
-                            log.Color = Convert.ToUInt32(kvp.Value, 16);
-                            break;
+                        //case "color":
+                        //    log.Color = Convert.ToUInt32(kvp.Value, 16);
+                        //    break;
                         case "detail":
                             log.Detail = MemDetailData.Deserialize(kvp.Value);
                             break;

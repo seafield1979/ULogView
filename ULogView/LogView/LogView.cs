@@ -1,11 +1,10 @@
 ﻿using System;   
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Windows.Forms;
+using ULogView.Utility;
+using System.Drawing.Drawing2D;
 
 namespace ULogView
 {
@@ -56,6 +55,7 @@ namespace ULogView
 
         private LogArea rootArea;           // ルートエリア
         private LogArea currentArea;        // 表示中のエリア(配下のエリアも表示される)
+        private List<LogData> currentLogs;  // カレントエリア配下のログリスト
         private LogIDs logIDs;              // LogのID情報
         private Lanes lanes;                // レーン情報
         private IconImages iconImages;      // アイコン画像
@@ -291,12 +291,40 @@ namespace ULogView
 
                 ChangeZoomRate();
 
+                // 配下のログを currentLogs にまとめる
+                currentLogs = new List<LogData>();
+                AddCurrentLogs(currentArea, currentLogs);
+
                 // ログの表示状態を初期状態に戻す
                 LogAreaManager.ResetLogData(area);
             }
             catch(Exception e)
             {
                 Debug.WriteLine("error " + e.Message);
+            }
+        }
+
+        /// <summary>
+        /// カレントエリア配下のログリストを作成する
+        /// </summary>
+        /// <param name="logs"></param>
+        private void AddCurrentLogs(LogArea logArea, List<LogData> logs)
+        {
+            // ログを追加
+            if (logArea.Logs != null)
+            {
+                foreach(LogData log in logArea.Logs)
+                {
+                    logs.Add(log);
+                }
+            }
+
+            if (logArea.ChildArea != null)
+            {
+                foreach (LogArea child in logArea.ChildArea)
+                {
+                    AddCurrentLogs(child, logs);
+                }
             }
         }
 
@@ -486,8 +514,13 @@ namespace ULogView
         /// <param name="g"></param>
         public void Draw(Graphics g)
         {
+            // アンチエリアシング
+            g.SmoothingMode = SmoothingMode.AntiAlias;
+
             DrawBG(g);
             DrawLog(g);
+
+            g.SmoothingMode = SmoothingMode.Default;
         }
 
         /// <summary>
@@ -506,7 +539,7 @@ namespace ULogView
                 // debug log::
                 // テキスト表示
                 int x0 = 50;
-                int y0 = 30;
+                int y0 = 60;
 
                 g2.DrawString(String.Format("dispTopTime:{0} dispEndTime:{1}", dispTopTime, dispEndTime), font1, Brushes.White, x0, y0);
                 y0 += 20;
@@ -524,18 +557,18 @@ namespace ULogView
 
                 if (direction == ELogViewDir.Vertical)
                 {
-                    DrawV(g2);
+                    DrawBG_V(g2);
                 }
                 else
                 {
-                    DrawH(g2);
+                    DrawBG_H(g2);
                 }
             }
             g.DrawImage(image, 0, 0);
         }
 
         // 横にログが進んでいく描画モード
-        private void DrawH(Graphics g)
+        private void DrawBG_H(Graphics g)
         {
             // クリッピング設定
             Rectangle rect1 = new Rectangle(topMarginX, topMarginY,
@@ -628,8 +661,8 @@ namespace ULogView
             }
         }
 
-        // 縦(下)にログが進んでいくモード
-        private void DrawV(Graphics g)
+        // 縦(下)にログが進んでいくモードの背景を描画
+        private void DrawBG_V(Graphics g)
         {
             // クリッピング設定
             Rectangle rect1 = new Rectangle(topMarginX, topMarginY, image.Width - (topMarginX + bottomMarginX), image.Height - (topMarginY + bottomMarginY));
@@ -659,7 +692,7 @@ namespace ULogView
             //--------------------------------
             var font2 = new Font("Arial", getZoomValue(10));
             // 横のライン
-            while (y < scrollBarLane.LargeChange)
+            while (y < scrollBarTime.LargeChange)
             {
                 g.DrawLine(Pens.White, topMarginX, topMarginY + y,
                     topMarginX + width, topMarginY + y);
@@ -672,18 +705,17 @@ namespace ULogView
                     break;
                 }
             }
-
-
+            
             // 縦のライン
             int offsetX = scrollBarLane.Value;
             while (x < scrollBarLane.LargeChange)
             {
                 g.DrawLine(Pens.White, topMarginX + x, topMarginY,
-                    topMarginX + x, height);
+                    topMarginX + x, topMarginY + height);
                 x += intervalX2;
             }
             g.DrawLine(Pens.White, topMarginX + x, topMarginY,
-                topMarginX + x, height);
+                topMarginX + x, topMarginY + height);
 
             //--------------------------------
             // 文字列
@@ -723,9 +755,63 @@ namespace ULogView
             }
         }
 
+        #region DrawLogs
+        
+        /// <summary>
+        /// 水平にタイムが進行するモードでのログ描画
+        /// </summary>
+        /// <param name="g"></param>
+        private void DrawLog_H(Graphics g)
+        {
+
+        }
+
+        /// <summary>
+        /// 垂直にタイムが進行するモードでのログ描画
+        /// </summary>
+        /// <param name="g"></param>
+        private void DrawLog_V(Graphics g)
+        {
+            // 先頭のログを取得
+            int topIndex = LogArea.GetTopLogIndex(dispTopTime, currentLogs);
+            if (topIndex == -1)
+            {
+                // 表示するログが見つからない
+                return;
+            }
+
+            // クリッピング設定
+            Rectangle rect1 = new Rectangle(topMarginX, topMarginY,
+                        image.Width - (topMarginX + bottomMarginX),
+                        image.Height - (topMarginY + bottomMarginY));
+            g.SetClip(rect1);
+
+            int index = topIndex;
+            
+            for (int i = topIndex; i < currentLogs.Count; i++)
+            {
+                LogData log = currentLogs[i];
+                Brush brush1 = new SolidBrush(Color.FromArgb((int)log.Color));
+
+                // 描画座標を計算する
+                double time = log.Time1 - dispTopTime;
+                int posY = topMarginY + (int)pixTime.timeToPix(time, zoomRate.Value);
+                int posX = topMarginX + (int)(((float)log.LaneId - 1.0 + 0.5) * (laneLen) * zoomRate.Value);
+
+                UDrawUtility.FillCircle(g, brush1, posX, posY, 10.0f);
+
+                if (log.Time1 > dispEndTime)
+                {
+                    break;
+                }
+            }
+        }
+
+        #endregion
+
         /**
-         * 表示用の情報を描画 for Debug
-         */
+            * 表示用の情報を描画 for Debug
+            */
         private void DrawParams(Graphics g, int _x, int _y)
         {
             int x = _x;
@@ -743,7 +829,14 @@ namespace ULogView
 
         public void DrawLog(Graphics g)
         {
-
+            if (direction == ELogViewDir.Horizontal)
+            {
+                DrawLog_H(g);
+            }
+            else
+            {
+                DrawLog_V(g);
+            }
         }
 
         public int GetLaneLength()

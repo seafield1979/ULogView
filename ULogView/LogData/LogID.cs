@@ -135,6 +135,22 @@ namespace ULogView
             }
         }
 
+        // インデクサー
+        public LogID this[int i]
+        {
+            set { this.logIDs[i] = value; }
+            get {
+                if (i < logIDs.Count)
+                {
+                    return logIDs[i];
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();

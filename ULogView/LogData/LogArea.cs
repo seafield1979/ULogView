@@ -138,6 +138,72 @@ namespace ULogView
             }
         }
 
+        /// <summary>
+        /// 現在の表示領域に表示される先頭のログを取得する
+        /// </summary>
+        /// <param name="time"></param>
+        /// <returns>-1:ログがない。</returns>
+        public static int GetTopLogIndex(double time, List<LogData> currentLogs)
+        {
+            if (currentLogs == null || currentLogs.Count == 0)
+            {
+                return -1;
+            }
+            int index = GetTopLogIndex2(0, currentLogs.Count - 1, time, currentLogs);
+
+            if (currentLogs[index].Time1 > time)
+            {
+                return index;
+            }
+            else
+            {
+                for (int i = index; i < currentLogs.Count - 1; i++)
+                {
+                    if (currentLogs[i].Time1 <= time && time < currentLogs[i + 1].Time1)
+                    {
+                        return i;
+                    }
+                }
+            }
+            return currentLogs.Count - 1;
+        }
+
+        /// <summary>
+        /// ログのリストからtimeで指定したログのインデックスを取得する
+        /// 再帰で前半部分と後半部分をたどる。
+        /// </summary>
+        /// <param name="topIndex">検索位置の先頭インデックス</param>
+        /// <param name="endIndex">検索位置の末尾インデックス</param>
+        /// <param name="time"></param>
+        /// <returns></returns>
+        public static int GetTopLogIndex2(int topIndex, int endIndex, double time, List<LogData> currentLogs)
+        {
+            if (endIndex - topIndex <= 10)
+            {
+                return topIndex;
+            }
+
+            if (currentLogs[topIndex].Time1 > time)
+            {
+                return topIndex;
+            }
+            if (currentLogs[endIndex].Time1 < time )
+            {
+                return endIndex;
+            }
+
+            // ２つの領域に分割して再検索
+            int middleIndex = (int)((topIndex + endIndex) / 2) + 1;
+            if (currentLogs[topIndex].Time1 <= time && time <= currentLogs[middleIndex].Time1)
+            {
+                return GetTopLogIndex2(topIndex, middleIndex, time, currentLogs);
+            }
+            else
+            {
+                return GetTopLogIndex2( middleIndex, endIndex, time, currentLogs);
+            }
+        }
+
         /**
          * コンソールログに出力する
          * 子エリアも同時に出力するため、再帰呼び出しを行う。
