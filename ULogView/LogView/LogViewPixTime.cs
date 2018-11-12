@@ -259,10 +259,10 @@ namespace ULogView
          * @input time : 変換元の時間(sec)
          * @output 変換後のpixel数
          */
-        public UInt64 timeToPix(double time, float zoom)
+        public int timeToPix(double time, float zoom)
         {
             // 1秒あたりのpixel数を取得してから時間(sec)を書ける
-            return (UInt64)((1.0 / Val) * time * zoom);
+            return (int)((1.0 / Val) * time * zoom);
         }
 
         /**

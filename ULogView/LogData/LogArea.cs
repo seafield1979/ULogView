@@ -159,9 +159,23 @@ namespace ULogView
             {
                 for (int i = index; i < currentLogs.Count - 1; i++)
                 {
-                    if (currentLogs[i].Time1 <= time && time < currentLogs[i + 1].Time1)
+                    LogData log = currentLogs[i];
+                    switch (log.Type)
                     {
-                        return i;
+                        case LogType.Point:
+                        case LogType.Value:
+                        case LogType.Bind:
+                            if (log.Time1 <= time && time < currentLogs[i + 1].Time1)
+                            {
+                                return i;
+                            }
+                            break;
+                        case LogType.Range:
+                            if (log.Time1 <= time && time < log.Time2)
+                            {
+                                return i;
+                            }
+                            break;
                     }
                 }
             }
@@ -372,6 +386,25 @@ namespace ULogView
         public void AddLogData(LogData logData)
         {
             lastAddArea.AddLogData(logData);
+        }
+
+        /**
+         * エリアログ(End)を追加
+         */
+        public void AddAreaEndLog(LogData log)
+        {
+            List<LogData> logs = lastAddArea.Logs;
+
+            // 末尾から探索して、同じID、レーンのエリアログを探す
+            for (int i = logs.Count - 1; i >= 0; i--)
+            {
+                LogData _log = logs[i];
+                if (log.Type == LogType.Range && log.ID == _log.ID && log.LaneId == _log.LaneId)
+                {
+                    _log.Time2 = log.Time1;
+                    break;
+                }
+            }
         }
 
         /**

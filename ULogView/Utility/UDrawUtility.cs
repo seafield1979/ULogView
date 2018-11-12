@@ -10,6 +10,50 @@ namespace ULogView.Utility
 {
     class UDrawUtility
     {
+        //
+        // Properties
+        //
+        #region Properties
+
+        // 再利用ブラシリスト
+        private static Dictionary<int, Brush> brushList = new Dictionary<int, Brush>();
+
+        private static Dictionary<int, Pen> penList = new Dictionary<int, Pen>();
+
+        #endregion Properties
+
+        // 
+        // Methods
+        //
+
+        #region Methods
+
+        /// <summary>
+        /// ブラシを取得する。過去に作成済みのものはリストから取得。
+        /// </summary>
+        /// <param name="color"></param>
+        /// <returns></returns>
+        public static Brush GetBrush(int color)
+        {
+            if (brushList.ContainsKey(color) == false)
+            {
+                brushList.Add(color, new SolidBrush(Color.FromArgb(color)));
+            }
+            return brushList[color];
+        }
+
+        public static Pen GetPen(int color)
+        {
+            if (penList.ContainsKey(color) == false)
+            {
+                penList.Add(color, new Pen(GetBrush(color)));
+            }
+            return penList[color];
+        }
+
+        #endregion Methods
+
+
         /// <summary>
         /// 中心座標と半径を指定して円を描画(内部塗りつぶし)
         /// </summary>

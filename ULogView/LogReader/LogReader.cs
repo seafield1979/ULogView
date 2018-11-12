@@ -493,9 +493,16 @@ namespace ULogView
                 }
                 else if (fields.ContainsKey("log"))
                 {
-                    LogData log = GetMemLogText(fields);
-                    
-                    manager.AddLogData(log);
+                    bool isRangeEnd;
+                    LogData log = GetMemLogText(fields, out isRangeEnd);
+                    if (isRangeEnd)
+                    {
+                        manager.AddAreaEndLog(log);
+                    }
+                    else
+                    {
+                        manager.AddLogData(log);
+                    }
                 }
             }
 
@@ -544,15 +551,17 @@ namespace ULogView
          *  Sample
          *  log,type: Single,id: 1,lane: 1,time: 0.0026799596,text: "test1"
          */
-        private LogData GetMemLogText(Dictionary<string,string> fields)
+        private LogData GetMemLogText(Dictionary<string,string> fields,out bool isRangeEnd)
         {
             LogData log = new LogData();
+
+            isRangeEnd = false;
 
             foreach (KeyValuePair<string,string> kvp in fields)
             {
                 if (kvp.Value != null)
                 {
-                    switch (kvp.Key.ToLower())
+                    switch (kvp.Key.Trim().ToLower())
                     {
                         case "type":
                             switch (kvp.Value.ToLower()) {
@@ -564,6 +573,7 @@ namespace ULogView
                                     break;
                                 case "areaend":              // 範囲終了
                                     log.Type = LogType.Range;
+                                    isRangeEnd = true;
                                     break;
                                 case "value":                // 値
                                     log.Type = LogType.Value;
@@ -594,6 +604,9 @@ namespace ULogView
                         //    break;
                         case "detail":
                             log.Detail = MemDetailData.Deserialize(kvp.Value);
+                            break;
+                        default:
+                            Console.WriteLine("hello");
                             break;
                     }
                 }
@@ -865,7 +878,7 @@ namespace ULogView
                     break;
                 case LogDataType.RangeEnd:
                     // 同じレーンの Range タイプのログに結合する
-                    // todo
+                    log.Type = LogType.Range;
                     isRangeEnd = true;
                     break;
                 case LogDataType.Value:
@@ -884,10 +897,10 @@ namespace ULogView
 
             //時間
             Double time = fs.GetDouble();
-            if (log.Type == LogType.Range && isRangeEnd == true)
+            if (isRangeEnd == true)
             {
                 // 1つ前の Rangeタイプの Time2 に時間を設定
-                // todo
+                areaManager.AddAreaEndLog(log);
                 return;
             }
             else
