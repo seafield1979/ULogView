@@ -274,6 +274,28 @@ namespace ULogView
         {
             return pix * Val;
         }
+        /**
+         * pixelを現在のズーム率で時間に変換し、適切な時間単位で表現した文字列を返す
+         * @input pix : 変換元のpixel数
+         * @output 変換後の単位付きの時間 (ns,us,ms,sのどれか)
+         */
+        public string timeToStr(double time)
+        {
+            switch (pixTimeTbl[(byte)pixTime].unitType)
+            {
+                case EUnitType.Nano:
+                    // 0.000000001 -> 1 
+                    return String.Format("{0}ns", time * 1000000000);
+                case EUnitType.Micro:
+                    // 0.000001 -> 1
+                    return String.Format("{0}us", time * 1000000);
+                case EUnitType.Milli:
+                    // 0.001 -> 1
+                    return String.Format("{0}ms", time * 1000);
+                default:
+                    return String.Format("{0}s", time);
+            }
+        }
     }
 
     /*

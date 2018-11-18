@@ -141,9 +141,27 @@ namespace ULogView
         }
 
         //
+        // Indexer インデクサ
+        //
+        public Lane this[int i]
+        {
+            set { this.lanes[i] = value; }
+            get
+            {
+                if (i < lanes.Count)
+                {
+                    return lanes[i];
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        //
         // Methods
         //
-        
+
         /**
          * レーンを１件追加する(パラメータ)
          * 

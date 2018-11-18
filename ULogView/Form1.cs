@@ -47,12 +47,13 @@ namespace ULogView
         public Form1()
         {
             InitializeComponent();
-            Initialize();
+            Initialize(null);
         }
 
-        public Form1(string logFilePath) : this()
+        public Form1(string logFilePath)
         {
-            documentLV.ReadLogFile(logFilePath);
+            InitializeComponent();
+            Initialize(logFilePath);
         }
 
         #endregion コンストラクタ
@@ -71,9 +72,10 @@ namespace ULogView
         // Methods::
         //
         #region Normal
-        private void Initialize()
+        private void Initialize(string logFilePath)
         {
-            documentLV = new DocumentLV(panel2.Width, panel2.Height, areaTree, idListBox, hScrollBar1, vScrollBar1, InvalidateDelegate);
+            documentLV = new DocumentLV(panel2.Width, panel2.Height, areaTree, idListBox,
+                    hScrollBar1, vScrollBar1, logFilePath, InvalidateDelegate);
 
             // マウスホイールのイベント登録
             this.MouseWheel += new MouseEventHandler(this.MainForm_MouseWheel);

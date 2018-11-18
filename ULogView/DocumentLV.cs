@@ -47,12 +47,14 @@ namespace ULogView
         //
         public DocumentLV(int width, int height,
             TreeView areaTree, CheckedListBox idListBox, HScrollBar hScrollBar, VScrollBar vScrollBar,
-            InvalidateForm invalidate1)
+            string logFilePath, InvalidateForm invalidate1)
         {
             this.areaTree = areaTree;
             this.idListBox = idListBox;
 
             logview = new LogView(width, height, 0, invalidate1, hScrollBar, vScrollBar);
+            this.ReadLogFile(logFilePath);
+            logview.Update();
         }
 
         //
