@@ -39,10 +39,11 @@ namespace ULogView
         private int bottomMarginX = 50;
         private int bottomMarginY = 50;
 
-        private int intervalX = 100;
-        private int intervalY = 100;
+        // 時間方向のラインを描画するインターバルのピクセル数
+        private int timeIntervalLen =  100;
 
-        private int laneLen = 100;
+        // レーンの幅のピクセル数
+        private int laneLen = 50;
 
         private int logAreaW, logAreaH;
 
@@ -296,7 +297,8 @@ namespace ULogView
                 dispTopTime = topTime;
                 dispEndTime = GetDispEndTime();
 
-                // dispAreaLen = pixTime.timeToPix(endTime, zoomRate.Value);
+                // スクロール位置を0にセット
+                ResetScrollValue();
 
                 ChangeZoomRate();
 
@@ -450,6 +452,9 @@ namespace ULogView
 
         // scroll::
         #region Scroll
+        /// <summary>
+        /// 現在のTimeスクロールバーの位置でdispTopTimeを更新する。
+        /// </summary>
         public void UpdateTimeScroll()
         {
             if (direction == ELogViewDir.Horizontal)
@@ -465,6 +470,12 @@ namespace ULogView
                     dispTopTime = dispEndTime;
                 }
             }
+        }
+
+        public void ResetScrollValue()
+        {
+            scrollBarH.Value = 0;
+            scrollBarV.Value = 0;
         }
 
         // X方向にスクロールする
@@ -578,23 +589,23 @@ namespace ULogView
                 g2.DrawString(String.Format("[sbV] value:{0},large:{1} max:{2}", scrollBarV.Value, scrollBarV.LargeChange, scrollBarV.Maximum),
                     font1, Brushes.White, x0, y0);
                 y0 += 20;
-                g2.DrawString(String.Format("zoomRate:{0} pixTime.zoom:{1}", zoomRate, pixTime.Val), font1, Brushes.White, x0, y0);
+                g2.DrawString(String.Format("zoomRate:{0} pixTime.zoom:{1}", zoomRate.Value, pixTime.Val), font1, Brushes.White, x0, y0);
                 y0 += 20;
 
                 if (direction == ELogViewDir.Vertical)
                 {
-                    DrawBG_V(g2);
+                    DrawBGV(g2);
                 }
                 else
                 {
-                    DrawBG_H(g2);
+                    DrawBGH(g2);
                 }
             }
             g.DrawImage(image, 0, 0);
         }
 
         // 横にログが進んでいく描画モード
-        private void DrawBG_H(Graphics g)
+        private void DrawBGH(Graphics g)
         {
             // クリッピング設定
             Rectangle rect1 = new Rectangle(topMarginX, topMarginY,
@@ -602,14 +613,14 @@ namespace ULogView
                 image.Height - (topMarginY + bottomMarginY));
             g.SetClip(rect1);
 
-            g.FillRectangle(Brushes.DarkSlateBlue, rect1);
+            g.FillRectangle(Brushes.Black, rect1);
 
-            int x = -(scrollBarH.Value % intervalX);
-            int y = -(scrollBarV.Value % intervalY);
-            int intervalX2 = (int)(intervalX * zoomRate.Value);
-            int intervalY2 = (int)(intervalY * zoomRate.Value);
-            int height = (int)GetLaneLength();
-            int width = image.Width - bottomMarginX;
+            float x = -(scrollBarH.Value % timeIntervalLen);
+            float y = -(scrollBarV.Value % laneLen);
+            float intervalX2 = (timeIntervalLen * zoomRate.Value);
+            float intervalY2 = (laneLen * zoomRate.Value);
+            float height = GetLaneLength();
+            float width = image.Width - bottomMarginX;
 
             if (height > image.Height - (bottomMarginY + topMarginY))
             {
@@ -624,7 +635,7 @@ namespace ULogView
             //--------------------------------
             // ライン
             //--------------------------------
-            var font2 = new Font("Arial", getZoomValue(10));
+            var font2 = new Font("Arial", getZoomValue(8));
             // 横のライン
             while (y < scrollBarLane.LargeChange)
             {
@@ -640,7 +651,7 @@ namespace ULogView
                 g.DrawLine(Pens.White, topMarginX + x, topMarginY,
                     topMarginX + x, topMarginY + height);
                 x += intervalX2;
-                if (pixTime.pixToTime(x) >= endTime - dispTopTime)
+                if (pixTime.pixToTime((int)x) >= endTime - dispTopTime)
                 {
                     // 表示の終端を描画する
                     x = pixTime.timeToPix(endTime - dispTopTime, zoomRate.Value);
@@ -689,11 +700,11 @@ namespace ULogView
             sf1.LineAlignment = StringAlignment.Far;
             while (x < scrollBarH.LargeChange + 20)
             {
-                double time = dispTopTime + pixTime.pixToTime(x) / zoomRate.Value;
+                double time = dispTopTime + pixTime.pixToTime((int)x) / zoomRate.Value;
                 g.DrawString(pixTime.timeToStr(time),
                     font2, Brushes.Yellow, topMarginX + x, topMarginY - 5, sf1);
                 x += intervalY2;
-                if (pixTime.pixToTime(x) >= endTime - dispTopTime)
+                if (pixTime.pixToTime((int)x) >= endTime - dispTopTime)
                 {
                     // 表示の終端を描画する
                     x = pixTime.timeToPix(endTime - dispTopTime, zoomRate.Value);
@@ -705,20 +716,20 @@ namespace ULogView
         }
 
         // 縦(下)にログが進んでいくモードの背景を描画
-        private void DrawBG_V(Graphics g)
+        private void DrawBGV(Graphics g)
         {
             // クリッピング設定
             Rectangle rect1 = new Rectangle(topMarginX, topMarginY, image.Width - (topMarginX + bottomMarginX), image.Height - (topMarginY + bottomMarginY));
             g.SetClip(rect1);
 
-            g.FillRectangle(Brushes.DarkSlateBlue, rect1);
+            g.FillRectangle(Brushes.Black, rect1);
 
-            int intervalX2 = (int)(intervalX * zoomRate.Value);
-            int intervalY2 = (int)(intervalY * zoomRate.Value);
-            int x = -(scrollBarH.Value % intervalX2);
-            int y = -(scrollBarV.Value % intervalY2);
-            int width = (int)GetLaneLength();
-            int height = image.Height - bottomMarginY;
+            float intervalX2 = laneLen * zoomRate.Value;
+            float intervalY2 = timeIntervalLen * zoomRate.Value;
+            float x = -(scrollBarH.Value % intervalX2);
+            float y = -(scrollBarV.Value % intervalY2);
+            float width = GetLaneLength();
+            float height = image.Height - bottomMarginY;
 
             if (width > image.Width - (bottomMarginX + topMarginX))
             {
@@ -733,14 +744,14 @@ namespace ULogView
             //--------------------------------
             // ライン
             //--------------------------------
-            var font2 = new Font("Arial", getZoomValue(10));
+            var font2 = new Font("Arial", getZoomValue(8));
             // 横のライン
             while (y < scrollBarTime.LargeChange)
             {
                 g.DrawLine(Pens.White, topMarginX, topMarginY + y,
                     topMarginX + width, topMarginY + y);
                 y += intervalY2;
-                if (pixTime.pixToTime(y) >= endTime - dispTopTime)
+                if (pixTime.pixToTime((int)y) >= endTime - dispTopTime)
                 {
                     // 表示の終端を描画する
                     y = pixTime.timeToPix(endTime - dispTopTime, zoomRate.Value);
@@ -778,11 +789,11 @@ namespace ULogView
             sf1.LineAlignment = StringAlignment.Center;
             while (y < scrollBarTime.LargeChange)
             {
-                double time = dispTopTime + pixTime.pixToTime(y) / zoomRate.Value;
+                double time = dispTopTime + pixTime.pixToTime((int)y) / zoomRate.Value;
                 g.DrawString( pixTime.timeToStr(time),
                     font2, Brushes.Yellow, topMarginX - 5, topMarginY + y, sf1);
                 y += intervalY2;
-                if (pixTime.pixToTime(y) >= endTime - dispTopTime)
+                if (pixTime.pixToTime((int)y) >= endTime - dispTopTime)
                 {
                     // 表示の終端を描画する
                     y = pixTime.timeToPix(endTime - dispTopTime, zoomRate.Value);
@@ -803,7 +814,7 @@ namespace ULogView
 
             while (x < scrollBarLane.LargeChange + 50)
             {
-                int laneIdx = (int)(((x + offsetX) / laneLen) / zoomRate.Value);
+                int laneIdx = (int)((offsetX + x) / (int)(laneLen * zoomRate.Value));
                 if (laneIdx < lanes.Count)
                 {
                     g.DrawString( lanes[laneIdx].Name,
@@ -820,7 +831,7 @@ namespace ULogView
         /// 水平にタイムが進行するモードでのログ描画
         /// </summary>
         /// <param name="g"></param>
-        private void DrawLog_H(Graphics g)
+        private void DrawLogH(Graphics g)
         {
             // 先頭のログを取得
             int topIndex = LogArea.GetTopLogIndex(dispTopTime, currentLogs);
@@ -903,7 +914,7 @@ namespace ULogView
         /// 垂直にタイムが進行するモードでのログ描画
         /// </summary>
         /// <param name="g"></param>
-        private void DrawLog_V(Graphics g)
+        private void DrawLogV(Graphics g)
         {
             // 先頭のログを取得
             int topIndex = LogArea.GetTopLogIndex(dispTopTime, currentLogs);
@@ -933,12 +944,15 @@ namespace ULogView
 
                             // 描画座標を計算する
                             double time = log.Time1 - dispTopTime;
-                            int x1 = topMarginX - scrollBarLane.Value + (int)(((float)log.LaneId - 1.0 + 0.5) * (laneLen) * zoomRate.Value);
+                            int x1 = topMarginX - scrollBarLane.Value + (int)(((float)log.LaneId - 1.0) * (laneLen) * zoomRate.Value);
                             int y1 = topMarginY + (int)pixTime.timeToPix(time, zoomRate.Value);
-
                             if (x1 >= topMarginX && x1 <= topMarginX + logAreaW)
                             {
+#if false
                                 UDrawUtility.FillCircle(g, brush1, x1, y1, 10.0f);
+#else
+                                g.FillRectangle(brush1, x1 + getZoomValue(3), y1 - getZoomValue(5), getZoomValue(laneLen - 6), getZoomValue(10));
+#endif
                             }
                         }
                         break;
@@ -962,11 +976,11 @@ namespace ULogView
 
                             int y1 = topMarginY + pixTime.timeToPix(time1, zoomRate.Value);
                             int y2 = topMarginY + pixTime.timeToPix(time2, zoomRate.Value);
-                            int x1 = topMarginX - scrollBarLane.Value + (int)(((float)log.LaneId - 1.0 + 0.5) * (laneLen) * zoomRate.Value);
+                            int x1 = topMarginX - scrollBarLane.Value + (int)(((float)log.LaneId - 1.0) * (laneLen) * zoomRate.Value);
 
                             if (x1 >= topMarginX && x1 <= topMarginX + logAreaW)
                             {
-                                g.FillRectangle(brush1, x1 - 5, y1, 10, y2 - y1);
+                                g.FillRectangle(brush1, x1 + getZoomValue(3), y1, getZoomValue(laneLen - 6), y2 - y1);
                             }
                         }
                         break;
@@ -982,7 +996,7 @@ namespace ULogView
             }
         }
 
-        #endregion
+#endregion
 
         /**
             * 表示用の情報を描画 for Debug
@@ -1006,11 +1020,11 @@ namespace ULogView
         {
             if (direction == ELogViewDir.Horizontal)
             {
-                DrawLog_H(g);
+                DrawLogH(g);
             }
             else
             {
-                DrawLog_V(g);
+                DrawLogV(g);
             }
         }
 
@@ -1088,7 +1102,7 @@ namespace ULogView
             // 拡大したときの動作としてスクロールバーのmaxが変化するパターンと
             // LargeChangeが変化するパターンがあるが、ここではmaxが変換するパターンを採用
             scrollBarLane.Maximum = (int)GetLaneLength();
-            scrollBarTime.Maximum = (int)(pixTime.timeToPix(endTime - topTime, zoomRate.Value) * zoomRate.Value);
+            scrollBarTime.Maximum = (int)pixTime.timeToPix(endTime - topTime, zoomRate.Value);
 
             // 0になると完全に表示されなくなるため下限は1
             if (scrollBarLane.Maximum < 1)

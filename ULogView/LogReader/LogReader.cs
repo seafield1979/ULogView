@@ -243,6 +243,8 @@ namespace ULogView
                         }
                     }
                 }
+
+
                 _logIDs.Add(logID);
             }
             return _logIDs;
@@ -583,7 +585,7 @@ namespace ULogView
                         case "id":
                             {
                                 log.ID = UInt32.Parse(kvp.Value);
-                                LogID logId = logIDs[(int)log.ID];
+                                LogID logId = logIDs[(int)log.ID - 1];
                                 if (logId != null)
                                 {
                                     log.Color = logId.Color;

@@ -10,6 +10,8 @@ namespace ULogView
 {
     class LogID
     {
+        // Properties
+        #region Properties
         private UInt32 id;
 
         public UInt32 ID
@@ -57,6 +59,7 @@ namespace ULogView
             get { return image; }
             set { image = value; }
         }
+        #endregion Properties
 
         //
         // Constructor

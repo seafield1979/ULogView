@@ -285,15 +285,15 @@ namespace ULogView
             {
                 case EUnitType.Nano:
                     // 0.000000001 -> 1 
-                    return String.Format("{0}ns", time * 1000000000);
+                    return String.Format("{0:0.0}ns", time * 1000000000);
                 case EUnitType.Micro:
                     // 0.000001 -> 1
-                    return String.Format("{0}us", time * 1000000);
+                    return String.Format("{0:0.0}us", time * 1000000);
                 case EUnitType.Milli:
                     // 0.001 -> 1
-                    return String.Format("{0}ms", time * 1000);
+                    return String.Format("{0:0.0}ms", time * 1000);
                 default:
-                    return String.Format("{0}s", time);
+                    return String.Format("{0:0.0}s", time);
             }
         }
     }
