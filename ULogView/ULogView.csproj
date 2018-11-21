@@ -71,6 +71,7 @@
     <Compile Include="LogView\LogViewOption.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UDraw\UDrawManager.cs" />
     <Compile Include="Utility\TimeCountByPerformanceCounter.cs" />
     <Compile Include="Utility\UByteList.cs" />
     <Compile Include="Utility\UDrawUtility.cs" />

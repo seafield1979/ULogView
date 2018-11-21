@@ -285,15 +285,15 @@ namespace ULogView
             {
                 case EUnitType.Nano:
                     // 0.000000001 -> 1 
-                    return String.Format("{0:0.0}ns", time * 1000000000);
+                    return String.Format("{0:0}ns", time * 1000000000);
                 case EUnitType.Micro:
                     // 0.000001 -> 1
-                    return String.Format("{0:0.0}us", time * 1000000);
+                    return String.Format("{0:0}us", time * 1000000);
                 case EUnitType.Milli:
                     // 0.001 -> 1
-                    return String.Format("{0:0.0}ms", time * 1000);
+                    return String.Format("{0:0}ms", time * 1000);
                 default:
-                    return String.Format("{0:0.0}s", time);
+                    return String.Format("{0:0}s", time);
             }
         }
     }
@@ -322,12 +322,12 @@ namespace ULogView
         }
         private EZoomRate zoomRate;
 
-        private float value;
+        private float _value;
 
         public float Value
         {
-            get { return value; }
-            set { value = value; }
+            get { return _value; }
+            set { _value = value; }
         }
 
         //
@@ -346,7 +346,7 @@ namespace ULogView
 
         private void SetZoomValue()
         {
-            value = eToV[(byte)zoomRate];
+            _value = eToV[(byte)zoomRate];
         }
 
         public float ZoomIn()
@@ -356,7 +356,7 @@ namespace ULogView
                 zoomRate++;
             }
             SetZoomValue();
-            return value;
+            return _value;
         }
 
         public float ZoomOut()
@@ -366,7 +366,7 @@ namespace ULogView
                 zoomRate--;
             }
             SetZoomValue();
-            return value;
+            return _value;
         }
     }
 }
